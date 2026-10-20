@@ -14,6 +14,8 @@
         --bg: #fff;
         --bg-soft: #f8f9fa;
         --accent: #2f6f4f;
+        --wrap: 1080px;
+        --toc-gap: 20px;
       }
       * {
         box-sizing: border-box;
@@ -32,56 +34,43 @@
         line-height: 1.75;
         letter-spacing: -0.003em;
       }
+      .page {
+        position: relative;
+        margin: 0 140px;
+      }
       .wrap {
-        max-width: 1180px;
+        width: var(--wrap);
+        max-width: 100%;
         margin: 0 auto;
+        min-width: 0;
         background: var(--bg);
         border-left: 1px solid var(--line);
         border-right: 1px solid var(--line);
         min-height: 100vh;
+        padding: 0 20px;
       }
       .inner {
-        padding: 48px 56px 88px;
+        margin: 32px 0;
+        padding: 16px 12px;
+        min-width: 0;
       }
 
-      /* 문서 헤더 */
+      /* 제목 → 기본정보 → 개요+목차 */
       .doc-head {
         border-bottom: 2px solid var(--text);
-        padding-bottom: 16px;
+        padding-bottom: 14px;
         margin-bottom: 22px;
       }
       .doc-title {
-        font-size: 30px;
+        font-size: 22px;
         font-weight: 700;
         letter-spacing: -0.02em;
-        margin: 0 0 8px;
-      }
-      .doc-title small {
-        font-size: 17px;
-        font-weight: 500;
-        color: var(--text-sub);
-        letter-spacing: -0.01em;
-      }
-      .doc-meta {
-        font-size: 13.5px;
-        color: var(--text-sub);
-        line-height: 1.7;
-      }
-      .doc-meta a {
-        color: var(--link);
-      }
-
-      /* 표지 → 요약+기본정보 → 개요+목차 */
-      .figph.mast-cover {
-        margin: 0 0 22px;
-        min-height: 240px;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
+        line-height: 1.45;
+        margin: 0;
       }
       .profile {
         display: grid;
-        grid-template-columns: 400px minmax(0, 1fr);
+        grid-template-columns: 320px minmax(0, 1fr);
         border: 1px solid var(--line-strong);
         margin: 0 0 28px;
         background: #fff;
@@ -89,8 +78,8 @@
       .profile .figph {
         margin: 0;
         border: none;
-        border-right: 1px solid var(--line);
         display: flex;
+        border-right: 1px solid var(--line);
         flex-direction: column;
         justify-content: center;
         background: #fafbfc;
@@ -123,13 +112,6 @@
       .profile .stack span {
         display: block;
       }
-      .mast {
-        display: grid;
-        grid-template-columns: minmax(0, 1fr) 280px;
-        gap: 22px 28px;
-        align-items: start;
-        margin: 0 0 8px;
-      }
       .mast-overview h2 {
         margin-top: 0;
       }
@@ -145,17 +127,21 @@
           border-bottom: 1px solid var(--line);
           min-height: 180px;
         }
-        .mast {
-          grid-template-columns: 1fr;
-        }
       }
 
-      /* 목차 */
+      /* 목차 — 본문 너비를 먹지 않고 옆에 떠 있음 */
       .toc {
-        border: 1px solid var(--line-strong);
-        background: var(--bg-soft);
-        padding: 14px 22px 16px;
+        position: fixed;
+        top: 32px;
+        left: calc(50% + (var(--wrap) / 2) + var(--toc-gap));
+        z-index: 5;
+        width: max-content;
+        height: fit-content;
+        max-width: none;
         margin: 0;
+        padding: 12px 16px 14px;
+        border: 1px solid var(--line-strong);
+        background: #fff;
       }
       .toc-title {
         font-weight: 700;
@@ -168,6 +154,7 @@
         margin: 0;
         padding: 0;
         font-size: 13.5px;
+        white-space: nowrap;
       }
       .toc ol ol {
         padding-left: 17px;
@@ -245,9 +232,11 @@
         border: 1px solid var(--line);
         border-radius: 3px;
         padding: 1px 5px;
+        overflow-wrap: anywhere;
+        word-break: break-word;
       }
 
-      /* 본문 + 사이드 인포박스 — 글이 박스 옆으로 흘러내리지 않게 열을 고정 */
+      /* 본문 + 사이드 — 개요 위, 이미지 아래 */
       .split {
         display: grid;
         grid-template-columns: minmax(0, 1fr) 320px;
@@ -258,14 +247,24 @@
       .split-main > h4:first-child {
         margin-top: 4px;
       }
+      .split-side {
+        min-width: 0;
+        max-width: 100%;
+      }
+      .split-side > .infobox {
+        margin: 0 0 12px;
+      }
+      .split-side > .figph {
+        margin: 0;
+        border-color: var(--line-strong);
+      }
       .infobox {
         width: 100%;
+        max-width: 100%;
         margin: 0;
         border: 1px solid var(--line-strong);
         font-size: 13px;
         background: #fff;
-        position: sticky;
-        top: 16px;
       }
       .infobox .ib-head {
         background: #3d4348;
@@ -276,36 +275,92 @@
         font-size: 14px;
         letter-spacing: -0.01em;
       }
-      .infobox table {
-        width: 100%;
-        border-collapse: collapse;
+      .ib-rows {
+        display: block;
+        min-width: 0;
       }
-      .infobox th,
-      .infobox td {
-        padding: 7px 10px;
+      .ib-row {
+        display: grid;
+        grid-template-columns: 6.2em minmax(0, 1fr);
         border-top: 1px solid var(--line);
-        vertical-align: top;
-        line-height: 1.6;
+        align-items: stretch;
       }
-      .infobox th {
+      .ib-row .k,
+      .ib-row .v {
+        padding: 7px 10px;
+        line-height: 1.55;
+        min-width: 0;
+      }
+      .ib-row .k {
         background: var(--bg-soft);
         color: var(--text-sub);
         font-weight: 600;
-        text-align: left;
-        width: 33%;
-        white-space: nowrap;
+        display: flex;
+        align-items: flex-start;
       }
-      .infobox .ib-fig {
-        padding: 0;
-        border-top: none;
+      .ib-row .v {
+        overflow-wrap: anywhere;
+        word-break: break-word;
+      }
+      .ib-row .v a {
+        overflow-wrap: anywhere;
+        word-break: break-word;
+      }
+      @media (max-width: 1600px) {
+        :root {
+          --wrap: 920px;
+        }
+        .page {
+          margin: 0 48px;
+        }
       }
       @media (max-width: 980px) {
+        .page {
+          margin: 0;
+        }
+        .wrap {
+          width: 100%;
+          border-left: none;
+          border-right: none;
+          padding: 0 8px;
+        }
+        .inner {
+          padding: 32px 20px 64px;
+        }
+        .toc {
+          position: static;
+          left: auto;
+          right: auto;
+          width: 100%;
+          max-width: none;
+          margin: 0 0 22px;
+        }
+        .toc ol {
+          white-space: normal;
+        }
         .split {
-          grid-template-columns: 1fr;
+          grid-template-columns: minmax(0, 1fr);
           gap: 18px 0;
         }
-        .infobox {
-          position: static;
+        .split-side {
+          order: -1;
+        }
+      }
+      @media (max-width: 640px) {
+        .inner {
+          padding: 24px 12px 52px;
+        }
+        .ib-row {
+          grid-template-columns: minmax(0, 1fr);
+        }
+        .ib-row .k {
+          padding: 8px 12px 0;
+        }
+        .ib-row .v {
+          padding: 2px 12px 9px;
+        }
+        .shot-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
         }
       }
 
@@ -372,8 +427,6 @@
         color: #3d4348;
       }
       .figph.has-img {
-        border-style: solid;
-        border-color: var(--line);
         background: #fff;
         padding: 0;
         overflow: hidden;
@@ -385,11 +438,8 @@
       .figph.has-img img {
         display: block;
         width: 100%;
+        max-width: 100%;
         height: auto;
-      }
-      .figph.mast-cover.has-img {
-        min-height: 0;
-        justify-content: flex-start;
       }
       .profile .figph.has-img {
         padding: 0;
@@ -399,16 +449,19 @@
         height: 100%;
         object-fit: cover;
       }
-      .infobox .figph.has-img {
+      .split-side > .figph.has-img {
         background: #fff;
         padding: 0;
       }
-      .infobox .figph {
-        border: none;
-        border-bottom: 1px solid var(--line);
+      .shot-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 10px;
+        margin: 0 0 48px;
+      }
+      .shot-grid .figph {
         margin: 0;
-        padding: 16px 12px;
-        background: #fafbfc;
+        min-height: 140px;
       }
 
       /* 인용 */
@@ -428,6 +481,8 @@
       table.data {
         border-collapse: collapse;
         width: 100%;
+        max-width: 100%;
+        table-layout: fixed;
         font-size: 13.6px;
         margin: 0 0 20px;
       }
@@ -437,16 +492,61 @@
         padding: 8px 11px;
         text-align: left;
         vertical-align: top;
+        min-width: 0;
+        overflow-wrap: anywhere;
+        word-break: break-word;
       }
       table.data th {
         background: var(--bg-soft);
         font-weight: 600;
-        white-space: nowrap;
       }
       table.data td.num {
-        text-align: right;
         font-variant-numeric: tabular-nums;
-        white-space: nowrap;
+      }
+      @media (max-width: 640px) {
+        table.data.wide,
+        table.data.wide tbody {
+          display: block;
+          border: none;
+        }
+        table.data.wide tr:first-child {
+          display: none;
+        }
+        table.data.wide tr {
+          display: block;
+          border: 1px solid var(--line-strong);
+          margin: 0 0 10px;
+          background: #fff;
+        }
+        table.data.wide td {
+          display: grid;
+          grid-template-columns: 6.8em minmax(0, 1fr);
+          gap: 8px;
+          border: none;
+          border-top: 1px solid var(--line);
+          text-align: left;
+        }
+        table.data.wide td:first-child {
+          border-top: none;
+          font-weight: 700;
+        }
+        table.data.wide td::before {
+          content: attr(data-label);
+          grid-column: 1;
+          color: var(--text-sub);
+          font-weight: 600;
+        }
+        table.data.wide td > * {
+          grid-column: 2;
+          min-width: 0;
+        }
+        table.data.wide td.num {
+          text-align: left;
+        }
+        .profile table.data th,
+        .profile table.data td {
+          white-space: normal;
+        }
       }
 
       ul.plain {
@@ -471,108 +571,103 @@
     </style>
   </head>
   <body>
-    <div class="wrap">
-      <div class="inner">
-        <div class="doc-head">
-          <h1 class="doc-title">김지우 <small>(프론트엔드 개발자)</small></h1>
-          <div class="doc-meta">
-            <a href="mailto:sdwrde12@gmail.com">sdwrde12@gmail.com</a>
-            &nbsp;·&nbsp; 010-3959-9794 &nbsp;·&nbsp;
-            <a href="https://github.com/joojue" target="_blank" rel="noopener"
-              >GitHub</a
-            >
-            &nbsp;·&nbsp;
-            <a
-              href="https://blog.naver.com/rnstnqhrmq12"
-              target="_blank"
-              rel="noopener"
-              >블로그</a
-            >
+    <div class="page">
+      <div class="wrap">
+        <div class="inner">
+          <div class="doc-head">
+            <h1 class="doc-title">
+              처음부터 끝까지 만들고, 같은 일은 자산으로 남기는 개발자
+            </h1>
           </div>
-        </div>
-
-        <div
-          class="figph mast-cover"
-          data-image="01-cover"
-          data-alt="대표 프로젝트 화면 콜라주"
-        >
-          <span class="label">IMAGE 01</span>
-          <div class="desc">
-            <b>표지 이미지 — 대표 프로젝트 화면 콜라주</b><br />
-            eticket, onui, 커넥티드456, PUBG PLAYERS TOUR 메인 화면을 가로로
-            이어 붙입니다. 기기 목업 없이 브라우저 스크린샷을 같은 높이로. 권장
-            비율 <b>1200×520</b>.
-          </div>
-        </div>
-
-        <div class="profile" id="s-info">
-          <div class="figph" data-image="02-profile" data-alt="프로필 사진">
-            <span class="label">IMAGE 02</span>
-            <div class="desc">
-              <b>프로필 사진</b><br />정면 상반신, 단색 배경. 정장보다 셔츠·니트
-              정도가 자연스럽습니다. <b>400×400</b> 정사각.
+          <div class="profile" id="s-info">
+            <div class="figph" data-image="02-profile" data-alt="프로필 사진">
+              <span class="label">IMAGE 02</span>
+              <div class="desc">
+                <b>프로필 사진</b><br />정면 상반신, 단색 배경. 정장보다
+                셔츠·니트 정도가 자연스럽습니다. <b>400×400</b> 정사각.
+              </div>
             </div>
-          </div>
-          <table class="data">
-            <tr>
-              <th>직군</th>
-              <td>웹 프론트엔드 / React Native</td>
-            </tr>
-            <tr>
-              <th>경력</th>
-              <td>2024.03.05 ~ 재직 중</td>
-            </tr>
-            <tr>
-              <th>프로젝트</th>
-              <td>전부 외주 · 14개 · 단독 4개</td>
-            </tr>
-            <tr>
-              <th>주력</th>
-              <td>Next.js, React, TypeScript · Jotai, TanStack Query</td>
-            </tr>
-            <tr>
-              <th>연락처</th>
-              <td>
-                <a href="mailto:sdwrde12@gmail.com">sdwrde12@gmail.com</a> ·
-                010-3959-9794 ·
-                <a
-                  href="https://github.com/joojue"
-                  target="_blank"
-                  rel="noopener"
-                  >github.com/joojue</a
-                >
-              </td>
-            </tr>
-            <tr>
-              <th>학력</th>
-              <td>
-                <span class="stack">
-                  <span>한국외국어대학교 세르비아크로아티아어과 졸업</span>
-                  <span>2017.03 ~ 2023.08</span>
-                  <span>재학 중 학과 및 단과대학 학생회장</span>
-                  <span>컴퓨터공학과 자율선택 29학점</span>
-                  <span
-                    >자료구조, 알고리즘, 정보보안, 웹 프로그래밍, 운영체제,
-                    데이터베이스</span
+            <table class="data">
+              <tr>
+                <th>이름</th>
+                <td>김지우</td>
+              </tr>
+              <tr>
+                <th>직군</th>
+                <td>웹 프론트엔드 / React Native</td>
+              </tr>
+              <tr>
+                <th>경력</th>
+                <td>2024.03.05 ~ 재직 중</td>
+              </tr>
+              <tr>
+                <th>프로젝트</th>
+                <td>전부 외주 · 14개 · 단독 4개</td>
+              </tr>
+              <tr>
+                <th>주력</th>
+                <td>Next.js, React, TypeScript · Jotai, TanStack Query</td>
+              </tr>
+              <tr>
+                <th>연락처</th>
+                <td>
+                  <a href="mailto:sdwrde12@gmail.com">sdwrde12@gmail.com</a> ·
+                  010-3959-9794 ·
+                  <a
+                    href="https://github.com/joojue"
+                    target="_blank"
+                    rel="noopener"
+                    >github.com/joojue</a
                   >
-                </span>
-              </td>
-            </tr>
-            <tr>
-              <th>교육</th>
-              <td>슈퍼코딩 웹 프론트엔드 부트캠프 · 2023.04 ~ 2023.11</td>
-            </tr>
-            <tr>
-              <th>수상</th>
-              <td>
-                2024 스마트앱어워드 생활안전분야 대상 · 2024.12.18 —
-                <a href="#s3-7">L.Scan</a>
-              </td>
-            </tr>
-          </table>
-        </div>
+                </td>
+              </tr>
+              <tr>
+                <th>학력</th>
+                <td>
+                  <span class="stack">
+                    <span>한국외국어대학교 세르비아크로아티아어과 졸업</span>
+                    <span>2017.03 ~ 2023.08</span>
+                    <span>재학 중 학과 및 단과대학 학생회장</span>
+                    <span>컴퓨터공학과 자율선택 29학점</span>
+                    <span
+                      >자료구조, 알고리즘, 정보보안, 웹 프로그래밍, 운영체제,
+                      데이터베이스</span
+                    >
+                  </span>
+                </td>
+              </tr>
+              <tr>
+                <th>교육</th>
+                <td>슈퍼코딩 웹 프론트엔드 부트캠프 · 2023.04 ~ 2023.11</td>
+              </tr>
+              <tr>
+                <th>수상</th>
+                <td>
+                  2024 스마트앱어워드 생활안전분야 대상 · 2024.12.18 —
+                  <a href="#s3-7">L.Scan</a>
+                </td>
+              </tr>
+            </table>
+          </div>
 
-        <div class="mast">
+          <nav class="toc" aria-label="목차">
+            <div class="toc-title">목차</div>
+            <ol>
+              <li><span class="num">1.</span> <a href="#s1">개요</a></li>
+              <li><span class="num">2.</span> <a href="#s2">강점</a></li>
+              <li><span class="num">3.</span> <a href="#s3">프로젝트</a></li>
+              <li><span class="num">4.</span> <a href="#s4">공용 자산</a></li>
+              <li>
+                <span class="num">5.</span>
+                <a href="#s5">AI를 업무에 적용한 방식</a>
+              </li>
+              <li>
+                <span class="num">6.</span>
+                <a href="#s6">기타 프로젝트</a>
+              </li>
+            </ol>
+          </nav>
+
           <div class="mast-overview">
             <h2 id="s1"><span class="sec">1.</span>개요</h2>
             <p class="lead">
@@ -600,7 +695,8 @@
               인플루언서 광고 매칭, B2B 상품 관리, 제품 안전 점검까지 겹치는
               영역이 거의 없습니다. 처음 보는 업무 규칙을 빠르게 파악해 화면으로
               옮기는 일을 반복해 온 셈입니다. 반대로 한 서비스를 오래 파고든
-              경험은 <a href="#s3-1">eticket</a> 하나에 몰려 있습니다.
+              경험은
+              <a href="#s3-1">eticket</a> 하나에 몰려 있습니다.
             </p>
             <p>
               반면 최근 스택은 한 지점으로 모였습니다. 2026년에 시작한
@@ -611,1161 +707,1261 @@
             </p>
           </div>
 
-          <div class="toc">
-            <div class="toc-title">목차</div>
-            <ol>
-              <li><span class="num">1.</span> <a href="#s1">개요</a></li>
-              <li><span class="num">2.</span> <a href="#s2">강점</a></li>
-              <li><span class="num">3.</span> <a href="#s3">프로젝트</a></li>
-              <li><span class="num">4.</span> <a href="#s4">공용 자산</a></li>
-              <li>
-                <span class="num">5.</span>
-                <a href="#s5">AI를 업무에 적용한 방식</a>
-              </li>
-              <li>
-                <span class="num">6.</span> <a href="#s6">기타 프로젝트</a>
-              </li>
-            </ol>
-          </div>
-        </div>
+          <!-- ========== 2 ========== -->
+          <h2 id="s2"><span class="sec">2.</span>강점</h2>
 
-        <!-- ========== 2 ========== -->
-        <h2 id="s2"><span class="sec">2.</span>강점</h2>
-
-        <div class="grid2">
-          <div class="card">
-            <h3 id="s2-1">
-              <span class="sec">2.1.</span>한 사이클을 열 번 넘게 돌렸습니다
-            </h3>
-            <p>
-              혼자 100%를 쓴 프로젝트가 넷입니다. <a href="#s3-4">PUBG</a>가
-              67커밋, 한국 중장년 협회 사이트가 31커밋,
-              <a href="#s3-5">쓸모 앱</a>이 48커밋, 그리고
-              <a href="#s3-2">onui</a>는 434커밋 중 432개를 썼습니다. 여기에
-              직접 세팅한 <a href="#s3-1">eticket</a>과
-              <a href="#s3-3">커넥티드456</a>이 각각 1,173커밋과 728커밋으로
-              붙습니다.
-            </p>
-            <p>
-              이 축의 핵심은 속도입니다. onui는 넉 달에 페이지 130개를 사실상
-              혼자 끝냈고, PUBG는 대회 시작 일주일 전에 착수해 일주일 만에 MVP를
-              실서버에 올렸습니다. 썸띵은 두 달 만에 297커밋을 넣었습니다.
-            </p>
-          </div>
-          <div class="card">
-            <h3 id="s2-2">
-              <span class="sec">2.2.</span>AI를 제품 기능과 업무 방식 양쪽에
-              넣어 봤습니다
-            </h3>
-            <p>
-              대부분은 둘 중 하나만 갖습니다. 양쪽을 해 본 것이 차별점입니다.
-            </p>
-            <p>
-              제품 쪽은 <a href="#s3-2">onui</a>입니다. 상담 챗봇과 사전
-              체크리스트 생성, 음성을 텍스트로 바꿔 만드는 상담 요약, 전문가
-              리포트 초안, 비식별 사례를 쌓아 유사 사례를 찾는 검색까지 상담
-              흐름 전체에 배치했습니다. <a href="#s3-6">more</a>에서는 모임
-              소개글을 읽고 성향 질문을 만든 뒤, 호스트와 참여자의 답을 비교해
-              매칭률을 냅니다.
-            </p>
-            <p>
-              업무 쪽은 <a href="#s5">관리자 페이지 생성 워크플로우</a>입니다.
-              공통 컴포넌트를 먼저 만들어 두고, 화면 목록과 유저 플로우를 정리한
-              문서를 모델에 넘겨 CRUD 뼈대를 받은 뒤 고유 기능을 얹습니다.
-              예전에는 관리자 페이지 하나에 짧으면 일주일, 길면 한 달이 걸렸는데
-              지금은 <strong>2~3일</strong>이면 끝납니다.
-            </p>
-          </div>
-          <div class="card">
-            <h3 id="s2-3">
-              <span class="sec">2.3.</span>반복을 재사용 가능한 자산으로 바꿔
-              왔습니다
-            </h3>
-            <p>
-              유틸을 프로젝트마다 다시 쓰는 피로감에서 사내 라이브러리
-              <code>@freewier2/things</code>가 나왔습니다. 템플릿에 넣는 대신
-              npm private으로 배포해, 템플릿을 쓰지 않는 프로젝트에서도
-              설치만으로 쓸 수 있게 했습니다. 여기서 한 발 더 나간 것이
-              <a href="#s4">Swagger 코드 생성 커스텀 템플릿</a>입니다. 프로젝트
-              셋업에 하루가 걸리던 것이 지금은 한 시간 안에 끝납니다.
-            </p>
-          </div>
-          <div class="card">
-            <h3 id="s2-4">
-              <span class="sec">2.4.</span>웹과 앱을 모두 실제로 출시해 봤습니다
-            </h3>
-            <p>
-              <a href="#s3-5">쓸모</a>는 같은 서비스를 웹과 앱으로 만들어
-              앱스토어와 플레이스토어에 배포했고, <a href="#s3-7">L.Scan</a>은
-              웹을 하이브리드로 패킹해 앱으로 냈습니다. 두 경험을 React Native
-              템플릿으로 정리해 웹뷰 설정과 자주 쓰는 네이티브 기능을 재사용할
-              수 있게 했습니다.
-            </p>
-          </div>
-        </div>
-
-        <!-- ========== 3 ========== -->
-        <h2 id="s3"><span class="sec">3.</span>프로젝트</h2>
-        <p>
-          아래 기간은 프로젝트 전체 기간이 아니라
-          <strong>본인이 실제로 커밋한 기간</strong>입니다.
-        </p>
-
-        <table class="data">
-          <tr>
-            <th>프로젝트</th>
-            <th>기간(본인 참여)</th>
-            <th>커밋</th>
-            <th>비중</th>
-            <th>성격</th>
-          </tr>
-          <tr>
-            <td><a href="#s3-1">eticket</a></td>
-            <td>2024.06 ~ 진행 중</td>
-            <td class="num">1,173 / 2,093</td>
-            <td class="num">56%</td>
-            <td>골프 티켓 예매</td>
-          </tr>
-          <tr>
-            <td><a href="#s3-3">커넥티드456</a></td>
-            <td>2024.10 ~ 2025.08</td>
-            <td class="num">728 / 1,438</td>
-            <td class="num">50%</td>
-            <td>중장년 취업·교육</td>
-          </tr>
-          <tr>
-            <td><a href="#s3-2">onui</a></td>
-            <td>2026.05 ~ 2026.09</td>
-            <td class="num">432 / 434</td>
-            <td class="num">99%</td>
-            <td>AI 전문가 상담</td>
-          </tr>
-          <tr>
-            <td><a href="#s3-8">썸띵</a></td>
-            <td>2025.09 ~ 2025.11</td>
-            <td class="num">297 / 644</td>
-            <td class="num">46%</td>
-            <td>B2B 상품 관리</td>
-          </tr>
-          <tr>
-            <td><a href="#s3-5">쓸모 (웹)</a></td>
-            <td>2025.11 ~ 2026.04</td>
-            <td class="num">226 / 330</td>
-            <td class="num">68%</td>
-            <td>건설 업체 연결</td>
-          </tr>
-          <tr>
-            <td><a href="#s3-6">more</a></td>
-            <td>2026.08 ~ 2026.10</td>
-            <td class="num">153 / 267</td>
-            <td class="num">57%</td>
-            <td>모임·클래스</td>
-          </tr>
-          <tr>
-            <td><a href="#s3-7">L.Scan</a></td>
-            <td>2024.10 ~ 2025.01</td>
-            <td class="num">81 / 229</td>
-            <td class="num">35%</td>
-            <td>제품안전 점검</td>
-          </tr>
-          <tr>
-            <td><a href="#s3-4">PUBG PLAYERS TOUR</a></td>
-            <td>2025.04 ~ 2025.07</td>
-            <td class="num">67 / 71</td>
-            <td class="num">94%</td>
-            <td>e스포츠 대회</td>
-          </tr>
-          <tr>
-            <td><a href="#s3-5">쓸모 (앱)</a></td>
-            <td>2025.08 ~ 2026.04</td>
-            <td class="num">48 / 48</td>
-            <td class="num">100%</td>
-            <td>React Native</td>
-          </tr>
-        </table>
-
-        <!-- 3.1 -->
-        <h3 id="s3-1">
-          <span class="sec">3.1.</span>eticket — 골프 티켓 예매 플랫폼
-        </h3>
-
-        <div class="split">
-          <div class="split-main">
-            <p>
-              골프 대회 일정을 알리고 티켓을 팔며 행사도 여는 서비스입니다. 주
-              사용자는 골프를 즐기는 중년층이고 회원 계정은 6,591개입니다. 입사
-              후 처음으로 초기 세팅부터 맡은 프로젝트이자, 가장 오래 붙어 있는
-              프로젝트입니다. 프론트엔드는 세 명이 거쳐 갔습니다. 본인
-              1,173커밋, 동료 479커밋, 중도 퇴사자 406커밋입니다.
-            </p>
-
-            <h4>개발 차수</h4>
-            <p>
-              1차는 2024년 6월부터 11월까지 515커밋으로 초기 세팅과 MVP,
-              예매·결제 흐름을 만들었습니다. 2차는 2025년 2월부터 9월까지
-              289커밋으로 기능을 확장하고 관리자 페이지를 재정비했고, 3차는
-              2026년 1월부터 4월까지 369커밋으로 이미 끝났습니다. 이후는 운영
-              대응 위주입니다.
-            </p>
-
-            <h4>예매 밖의 운영 기능</h4>
-            <p>
-              대회 현장에서 쓰는 전광판 실시간 추첨을 소켓으로 만들었습니다.
-              대회 운영 화면에서 추첨을 돌리면 현장 전광판에 결과가 바로
-              나갑니다. 해외 관객을 위해 PayPal 결제를 붙였고, 템플릿을 내려받아
-              명단을 채워 올리면 초대권 성격의 티켓을 대량 발송하는 기능도
-              넣었습니다.
-            </p>
-
-            <h4>처음 세팅한 프로젝트라서 생긴 빚</h4>
-            <p>
-              처음 만든 만큼 초반 코드에 가독성과 성능이 아쉬운 부분이 남았고,
-              추가 개발을 할 때마다 그 위에 쌓이는 구조였습니다. 리팩터링을 따로
-              잡는 대신 기능을 더할 때 해당 영역의 레거시를 함께 정리하는
-              방식으로 갔습니다. 대규모 정리를 거치면서 결제처럼 중추가 되는
-              기능에서 불안정성을 걷어냈습니다.
-            </p>
-            <p>
-              요구사항도 계속 움직였습니다. A라는 조건으로 좁혀 만든 기능에
-              변경이나 추가 요청이 들어오는 일이 반복됐습니다. 그래서 변경
-              작업을 할 때마다 당장의 요구만 맞추지 않고 확장 가능한 구조로 바꿔
-              두었고, 이후 추가 개발이 눈에 띄게 수월해졌습니다.
-            </p>
-
-            <h4>운영 중 에러를 사후에만 알 수 있던 구조</h4>
-            <p>
-              프로덕션 에러를 클라이언트가 직접 겪거나 CS로 접수된 것만
-              보고받았습니다. 로그를 계속 들여다보지 않는 한 실사용자가 겪은
-              에러를 제때 잡을 방법이 없었습니다.
-            </p>
-            <p>
-              Sentry를 붙이고 Slack 알림을 연결했습니다. 발생 즉시 인지가
-              가능해진 것도 컸지만, 더 큰 변화는 제보의 해상도였습니다. "A
-              기능이 안 된다"는 모호한 말을 받아도 어떤 API에서 어떤 에러가
-              났는지와 사용자의 행동 기록까지 함께 볼 수 있게 되면서 이슈 처리가
-              훨씬 수월해졌습니다.
-            </p>
-
-            <h4>관리자 페이지의 컨벤션 불일치</h4>
-            <p>
-              관리자 목록 페이지들은 UI가 획일화되어 있었지만 개발 시기와
-              담당자가 달라 컨벤션이 어긋나 있었고, 그 탓에 실제 동작이
-              페이지마다 달라지는 경우가 있었습니다. 342줄짜리
-              <code>docs/admin-state-convention.md</code>를 쓰고 리팩터링할 때
-              이 문서를 기준으로 목록 페이지를 다시 만들었습니다. 뒤에 나올
-              <a href="#s5">문서 기반 관리자 페이지 작업</a>의 출발점이 된
-              작업입니다.
-            </p>
-
-            <blockquote>
+          <div class="grid2">
+            <div class="card">
+              <h3 id="s2-1">
+                <span class="sec">2.1.</span>한 사이클을 열 번 넘게 돌렸습니다
+              </h3>
               <p>
-                <b>Pages Router를 고른 이유</b><br />
-                당시 대부분의 프로젝트를 Pages Router로 작업하고 있었습니다. 새
-                기술을 성급히 들이기보다 이미 완전히 통제할 수 있는 아키텍처로
-                안정성을 확보하는 쪽을 택했습니다. 지금도 마이그레이션 계획은
-                없습니다.
+                혼자 100%를 쓴 프로젝트가 넷입니다. <a href="#s3-4">PUBG</a>가
+                67커밋, 한국 중장년 협회 사이트가 31커밋,
+                <a href="#s3-5">쓸모 앱</a>이 48커밋, 그리고
+                <a href="#s3-2">onui</a>는 434커밋 중 432개를 썼습니다. 여기에
+                직접 세팅한 <a href="#s3-1">eticket</a>과
+                <a href="#s3-3">커넥티드456</a>이 각각 1,173커밋과 728커밋으로
+                붙습니다.
               </p>
-            </blockquote>
-          </div>
-          <div class="infobox">
-            <div class="ib-head">eticket</div>
-            <div class="figph" data-image="03-eticket" data-alt="eticket 메인 화면">
-              <span class="label">IMAGE 03</span>
-              <div class="desc">
-                <b>메인 화면</b><br />대회 목록과 티켓 구매 플로우가 보이는
-                화면. 모바일 뷰 권장. <b>600×900</b>
-              </div>
+              <p>
+                이 축의 핵심은 속도입니다. onui는 넉 달에 페이지 130개를 사실상
+                혼자 끝냈고, PUBG는 대회 시작 일주일 전에 착수해 일주일 만에
+                MVP를 실서버에 올렸습니다. 썸띵은 두 달 만에 297커밋을
+                넣었습니다.
+              </p>
             </div>
-            <table>
-              <tr>
-                <th>기간</th>
-                <td>2024.06 ~ 진행 중 (2년 4개월)</td>
-              </tr>
-              <tr>
-                <th>기여</th>
-                <td>1,173 / 2,093 (56%)</td>
-              </tr>
-              <tr>
-                <th>규모</th>
-                <td>TS 708개 · 페이지 110개</td>
-              </tr>
-              <tr>
-                <th>팀</th>
-                <td>프론트엔드 3명</td>
-              </tr>
-              <tr>
-                <th>스택</th>
-                <td>
-                  Next.js Pages Router, Jotai, RHF + Zod, Tailwind, Sentry,
-                  Firebase, Jest
-                </td>
-              </tr>
-              <tr>
-                <th>성과</th>
-                <td>2025년 골프티켓 유통 점유율 1위</td>
-              </tr>
-              <tr>
-                <th>주소</th>
-                <td>
-                  <a
-                    href="https://www.unitix.co.kr"
-                    target="_blank"
-                    rel="noopener"
-                    >unitix.co.kr</a
-                  >
-                </td>
-              </tr>
-            </table>
-          </div>
-        </div>
-
-        <!-- 3.2 -->
-        <h3 id="s3-2">
-          <span class="sec">3.2.</span>onui — AI 기반 전문가 상담 플랫폼
-        </h3>
-
-        <div class="split">
-          <div class="split-main">
-            <p>
-              특정 분야 전문가에게 상담을 받는 서비스입니다. AI 챗봇과
-              대화하거나 성향 질문에 답해 전문가를 추천받고, 대면과 전화, 화상
-              중에서 고릅니다. 전문가는 세미나도 열 수 있는데 상담과 달리 티케팅
-              방식에 가깝습니다.
-            </p>
-
-            <h4>화상 상담을 직접 만들었습니다</h4>
-            <p>
-              외부 화상 SDK에 기대지 않고 LiveKit을 자체 호스팅했습니다. 화상
-              통화와 화면 공유, 채팅, 음성의 텍스트 변환, AI 분석을 한 상담 세션
-              안에 담았습니다.
-            </p>
-
-            <h4>LLM과 RAG를 상담 흐름 전체에 배치했습니다</h4>
-            <table class="data">
-              <tr>
-                <th>기능</th>
-                <th>입력</th>
-                <th>산출과 쓰임</th>
-              </tr>
-              <tr>
-                <td>AI 챗봇</td>
-                <td>선택한 분야 + 이용자 질의</td>
-                <td>참고용 상담 답변, 같은 대화로 전문가 추천</td>
-              </tr>
-              <tr>
-                <td>사전 체크리스트</td>
-                <td>상담 주제, 직전 답변</td>
-                <td>꼬리를 무는 사전 질문, 매칭과 상담 신청의 참고 자료</td>
-              </tr>
-              <tr>
-                <td>상담 요약</td>
-                <td>화상 음성의 텍스트 기록</td>
-                <td>이용자·관리자가 다시 보는 상담 노트</td>
-              </tr>
-              <tr>
-                <td>리포트 초안</td>
-                <td>상담 기록</td>
-                <td>핵심 요약과 조언 초안 → 전문가 검토 후 최종 리포트</td>
-              </tr>
-              <tr>
-                <td>유사 사례 검색</td>
-                <td>비식별 상담·문답 DB</td>
-                <td>답변 근거, 비슷한 실무 사례 제시</td>
-              </tr>
-            </table>
-
-            <h4>넉 달에 130페이지가 가능했던 이유</h4>
-            <p>
-              세 가지를 겹쳤습니다. 템플릿으로 초기 세팅과 공통 컴포넌트, 훅의
-              공수를 줄였고, 템플릿에 넣기엔 너무 국소적인 코드는 다른
-              프로젝트와 개인 코드베이스에서 가져왔습니다. 그리고 관리자
-              페이지는 문서와 규칙 기반 AI 워크플로우로 처리했습니다. 셋 중
-              공수가 가장 크게 줄어든 것은 세 번째입니다.
-            </p>
-
-            <h4>캐시가 남아 사용자 경험을 망치던 문제</h4>
-            <p>
-              react-query 전역 캐시 설정 탓에 등록이나 수정 뒤에도 이전 캐시가
-              남았습니다.
-              <code>useMutation</code>을 <code>useApiMutation</code>으로 감싸
-              갱신할 쿼리 키를 선언하게 만들고, 페이지나 컴포넌트에서
-              <code>invalidateQueries</code>를 직접 부르지 못하도록 규칙으로
-              고정했습니다.
-            </p>
-            <p>
-              쿼리 키 규약도 손봤습니다. 기존에는
-              <code>useGetChatMembers</code>를 쓰면서 키는
-              <code>['members','chat']</code>이라 훅 이름과 키가 어긋나
-              헷갈렸습니다. 훅 이름에서 <code>use</code>만 뗀
-              <code>getChatMembers</code> 형태로 통일해 초기화할 쿼리를
-              명시적으로 지정할 수 있게 했고, 이 규칙을 팀 AI 규칙 파일에 적어
-              같은 실수가 반복되지 않게 했습니다.
-            </p>
-          </div>
-          <div class="infobox">
-            <div class="ib-head">onui (yeoro)</div>
-            <div class="figph" data-image="04-onui" data-alt="onui 화상 상담 화면">
-              <span class="label">IMAGE 04</span>
-              <div class="desc">
-                <b>화상 상담 화면</b><br />영상 그리드와 자막(STT)이 함께 보이는
-                상담 세션. 이 프로젝트의 핵심이라 가장 공들일 이미지.
-                <b>1200×750</b>
-              </div>
+            <div class="card">
+              <h3 id="s2-2">
+                <span class="sec">2.2.</span>AI를 제품 기능과 업무 방식 양쪽에
+                넣어 봤습니다
+              </h3>
+              <p>
+                대부분은 둘 중 하나만 갖습니다. 양쪽을 해 본 것이 차별점입니다.
+              </p>
+              <p>
+                제품 쪽은 <a href="#s3-2">onui</a>입니다. 상담 챗봇과 사전
+                체크리스트 생성, 음성을 텍스트로 바꿔 만드는 상담 요약, 전문가
+                리포트 초안, 비식별 사례를 쌓아 유사 사례를 찾는 검색까지 상담
+                흐름 전체에 배치했습니다. <a href="#s3-6">more</a>에서는 모임
+                소개글을 읽고 성향 질문을 만든 뒤, 호스트와 참여자의 답을 비교해
+                매칭률을 냅니다.
+              </p>
+              <p>
+                업무 쪽은 <a href="#s5">관리자 페이지 생성 워크플로우</a>입니다.
+                공통 컴포넌트를 먼저 만들어 두고, 화면 목록과 유저 플로우를
+                정리한 문서를 모델에 넘겨 CRUD 뼈대를 받은 뒤 고유 기능을
+                얹습니다. 예전에는 관리자 페이지 하나에 짧으면 일주일, 길면 한
+                달이 걸렸는데 지금은 <strong>2~3일</strong>이면 끝납니다.
+              </p>
             </div>
-            <table>
-              <tr>
-                <th>기간</th>
-                <td>2026.05 ~ 2026.09 (4개월)</td>
-              </tr>
-              <tr>
-                <th>기여</th>
-                <td>432 / 434 (99%)</td>
-              </tr>
-              <tr>
-                <th>규모</th>
-                <td>TS 408개 · 페이지 130개</td>
-              </tr>
-              <tr>
-                <th>스택</th>
-                <td>
-                  Next 16, React 19, TanStack Query 5, Jotai, Zod 4, Tailwind 4,
-                  shadcn/ui
-                </td>
-              </tr>
-              <tr>
-                <th>실시간</th>
-                <td>LiveKit 자체 호스팅, STOMP</td>
-              </tr>
-              <tr>
-                <th>주소</th>
-                <td>
-                  <a href="https://onui.top/" target="_blank" rel="noopener"
-                    >onui.top</a
-                  >
-                </td>
-              </tr>
-            </table>
-          </div>
-        </div>
-
-        <!-- 3.3 -->
-        <h3 id="s3-3">
-          <span class="sec">3.3.</span>커넥티드456 — 중장년 취업·교육 플랫폼
-        </h3>
-
-        <div class="split">
-          <div class="split-main">
-            <p>
-              구직자와 기업을 매칭하고 채용 공고를 올려 중장년 채용을 돕는
-              플랫폼입니다. 라운지에서 취업과 생활 정보를 제공하고 커뮤니티와
-              이벤트도 운영합니다. 부트캠프는 플랫폼에서 신청을 받고 관리자
-              페이지에서 명단을 관리합니다.
-              <strong
-                >본인 커밋 수로는 eticket 다음으로 큰 프로젝트입니다.</strong
-              >
-            </p>
-
-            <h4>PC와 모바일을 라우트에서 갈랐습니다</h4>
-            <p>
-              중장년 대상이라 PC와 모바일의 UI 차이가 컸고, 클라이언트가
-              반응형이 아닌 적응형을 명시해 요청했습니다. 한 컴포넌트 안에서
-              분기할 수도 있었지만 스파게티 코드가 될 가능성이 보였습니다.
-              <code>src/pages/[userAgent]/</code> 라우트로 과감히 나누고
-              <code>PcMain</code>과 <code>MobileMain</code>을 따로
-              렌더링했습니다. 유지보수 비용이 적지는 않았지만, 한 컴포넌트에
-              둘을 섞었을 때를 가정하면 그래도 적은 쪽이었다고 봅니다.
-            </p>
-
-            <h4>글자 크기를 사용자에 맞춰 다시 잡았습니다</h4>
-            <p>
-              처음에는 다른 프로젝트와 같은 표준 폰트 크기로 개발했습니다. 이후
-              중장년 사용자를 고려해 기본 폰트를 16px에서 18px로 키우고, 다른
-              요소의 크기도 눈에 잘 들어오면서 전체 균형은 유지되도록 다시
-              조정했습니다.
-            </p>
-
-            <h4>가장 기억에 남는 프로젝트</h4>
-            <p>
-              프론트엔드 두 명으로 시작했는데 한 명이 중도에 퇴사했습니다.
-              한동안 혼자 진행하다 새 팀원이 합류했지만, 기획의 규모가 크고
-              히스토리를 따라가기 어려워 실질적인 작업은 거의 혼자 했습니다.
-            </p>
-            <p>
-              초기 세팅과 MVP를 맡았고, 2차 개발에서 넘어온 이력서 페이지는
-              버그가 많아 아예 새로 만들었습니다. 설 연휴를 반납하고 버그를 잡은
-              적도 있습니다. 히스토리가 끊긴 코드를 떠안아 안정화까지 끌고 간
-              시간이 길었던 만큼 가장 기억에 남는 프로젝트입니다.
-            </p>
-
-            <p>
-              국민건강보험 API를 연동해 자격과 경력 확인에 필요한 정보를 받아
-              왔고, 인증 UI는 외부 위젯 대신 직접 만들어 붙였습니다. PWA는
-              클라이언트가 하이브리드 앱 대신 모바일 브라우저의 홈 화면 추가를
-              앱처럼 쓰고 싶어 해서 넣었습니다. 이력서 PDF는 회원 ID를 서버에
-              넘겨 서버가 만든 문서를 프론트엔드에서 내려받는 방식입니다. 자매
-              서비스로 한국 중장년 협회 사이트가 있습니다. 2025년 7월에 2주 동안
-              31커밋을 혼자 작성했습니다.
-            </p>
-          </div>
-          <div class="infobox">
-            <div class="ib-head">커넥티드456</div>
-            <div
-              class="figph"
-              data-image="05-connected"
-              data-alt="커넥티드456 PC와 모바일 화면"
-            >
-              <span class="label">IMAGE 05</span>
-              <div class="desc">
-                <b>PC·모바일 화면 비교</b><br />같은 메인을 PC와 모바일로
-                나란히. 레이아웃이 아예 다르다는 점이 드러나야 합니다.
-                <b>1400×800</b>
-              </div>
+            <div class="card">
+              <h3 id="s2-3">
+                <span class="sec">2.3.</span>반복을 재사용 가능한 자산으로 바꿔
+                왔습니다
+              </h3>
+              <p>
+                유틸을 프로젝트마다 다시 쓰는 피로감에서 사내 라이브러리
+                <code>@freewier2/things</code>가 나왔습니다. 템플릿에 넣는 대신
+                npm private으로 배포해, 템플릿을 쓰지 않는 프로젝트에서도
+                설치만으로 쓸 수 있게 했습니다. 여기서 한 발 더 나간 것이
+                <a href="#s4">Swagger 코드 생성 커스텀 템플릿</a>입니다.
+                프로젝트 셋업에 하루가 걸리던 것이 지금은 한 시간 안에 끝납니다.
+              </p>
             </div>
-            <table>
-              <tr>
-                <th>기간</th>
-                <td>2024.10 ~ 2025.08 (10개월)</td>
-              </tr>
-              <tr>
-                <th>기여</th>
-                <td>728 / 1,438 (50%)</td>
-              </tr>
-              <tr>
-                <th>규모</th>
-                <td>TS 742개 · 페이지 60개</td>
-              </tr>
-              <tr>
-                <th>스택</th>
-                <td>
-                  Next 15 Pages Router, react-query, Jotai, Sentry, next-pwa,
-                  스마트에디터
-                </td>
-              </tr>
-              <tr>
-                <th>특징</th>
-                <td>PC·모바일 적응형 분리</td>
-              </tr>
-              <tr>
-                <th>현재</th>
-                <td>유지보수 종료, 인수인계 완료</td>
-              </tr>
-              <tr>
-                <th>주소</th>
-                <td>
-                  <a
-                    href="https://connected456.co.kr"
-                    target="_blank"
-                    rel="noopener"
-                    >connected456.co.kr</a
-                  >
-                </td>
-              </tr>
-            </table>
-          </div>
-        </div>
-
-        <!-- 3.4 -->
-        <h3 id="s3-4">
-          <span class="sec">3.4.</span>PUBG PLAYERS TOUR — e스포츠 대회 사이트
-        </h3>
-
-        <div class="split">
-          <div class="split-main">
-            <p>
-              크래프톤이 주최한 대회 사이트입니다. 배틀그라운드 접속 첫 화면
-              배너 광고에 링크가 걸려 오픈 첫날 트래픽이 몰렸고 일일 방문자 10만
-              명을 넘겼습니다.
-            </p>
-            <p>
-              랜딩만 있는 사이트가 아닙니다. 메인에 공식 영상 배너와 진행 방식,
-              대회 캐러셀, 외부 링크, 공지가 있고 헤더 탭으로 일정과 랭킹, 통계,
-              공지 페이지가 붙습니다. 대회 상세에는 참가 신청과 경기·중계 일정,
-              중계 플랫폼 링크가 있습니다. 랭킹은 관리자가 입력하고, 킬 수와
-              KDA, 아이템 사용 횟수 같은 통계는 외부 API에서 받아 옵니다.
-            </p>
-
-            <h4>일주일 만에 실서버까지</h4>
-            <p>
-              실제 작업 시작이 대회 시작 일주일 전이었습니다. 빠르고 안정적인
-              MVP가 최우선이었고, 초기 버전을 일주일 만에 실서버 배포까지
-              마쳤습니다. 이후 대회가 진행되며 데이터가 쌓이는 랭킹과 통계, 결과
-              페이지와 관리자 페이지를 더하고 유지보수를 이어 갔습니다. 기획은
-              클라이언트가 줬고, 기존 아임웹으로 운영하던 디자인이 만족스럽지
-              않아 디자이너가 새로 작업했습니다.
-            </p>
-
-            <h4>대회가 끝난 뒤에 정리한 것</h4>
-            <p>
-              대회 당시에는 일정을 맞추는 쪽에 무게를 둬 캐싱 전략을 따로 세우지
-              않았습니다. 19개 페이지가 모두 클라이언트 렌더링이었고
-              <code>QueryClient</code>도 기본값이었습니다. 운영이 끝난 뒤 전역
-              캐시 정책과 Sentry 샘플링을 정리해 불필요한 요청 증폭과 모니터링
-              비용을 걷어 냈습니다.
-            </p>
-          </div>
-          <div class="infobox">
-            <div class="ib-head">PUBG PLAYERS TOUR</div>
-            <div
-              class="figph"
-              data-image="06-pubg"
-              data-alt="PUBG PLAYERS TOUR 메인과 통계"
-            >
-              <span class="label">IMAGE 06</span>
-              <div class="desc">
-                <b>메인 + 통계 페이지</b><br />공식 영상 배너가 있는 메인과,
-                외부 API로 받아 온 팀 통계 표를 위아래로. <b>1200×1000</b>
-              </div>
+            <div class="card">
+              <h3 id="s2-4">
+                <span class="sec">2.4.</span>웹과 앱을 모두 실제로 출시해
+                봤습니다
+              </h3>
+              <p>
+                <a href="#s3-5">쓸모</a>는 같은 서비스를 웹과 앱으로 만들어
+                앱스토어와 플레이스토어에 배포했고, <a href="#s3-7">L.Scan</a>은
+                웹을 하이브리드로 패킹해 앱으로 냈습니다. 두 경험을 React Native
+                템플릿으로 정리해 웹뷰 설정과 자주 쓰는 네이티브 기능을 재사용할
+                수 있게 했습니다.
+              </p>
             </div>
-            <table>
-              <tr>
-                <th>기간</th>
-                <td>2025.04 ~ 2025.07 (집중 3주)</td>
-              </tr>
-              <tr>
-                <th>기여</th>
-                <td>67 / 71 (94%)</td>
-              </tr>
-              <tr>
-                <th>규모</th>
-                <td>TS 131개 · 페이지 19개</td>
-              </tr>
-              <tr>
-                <th>스택</th>
-                <td>Next 15, React 19, RHF + Zod, Tailwind 4</td>
-              </tr>
-              <tr>
-                <th>트래픽</th>
-                <td>일일 방문자 10만 이상</td>
-              </tr>
-              <tr>
-                <th>클라이언트</th>
-                <td>크래프톤</td>
-              </tr>
-            </table>
           </div>
-        </div>
 
-        <!-- 3.5 -->
-        <h3 id="s3-5">
-          <span class="sec">3.5.</span>쓸모 — 건설 업체 연결 서비스 (웹 + 앱)
-        </h3>
-
-        <div class="split">
-          <div class="split-main">
-            <p>
-              네이버 지도를 기반으로 주변이나 입력한 주소의 건설 관련 업체를
-              연결하는 서비스입니다.
-            </p>
-
-            <h4>웹을 중심에 두고 네이티브는 앱 전용 기능만</h4>
-            <p>
-              대부분을 웹으로 구현하고 네이티브는 앱에서만 가능한 영역으로
-              한정했습니다. FCM과 외부 앱 및 결제 스킴, 소셜 로그인, 위치, 공유,
-              안드로이드 뒤로가기입니다.
-            </p>
-            <p>
-              통신은 타입이 있는 JSON을 <code>postMessage</code>로 주고받는
-              방식입니다. 다만 로그인만 예외로 뒀습니다. 네이티브 SDK로 로그인한
-              뒤 토큰을 메시지로 보내지 않고 <code>injectJavaScript</code>로 웹
-              콜백 URL에 붙여 이동시킵니다. 푸시는 네이티브가 토큰을 받아 웹이
-              준비됐다는 신호를 받는 시점에 넘기고 포그라운드 표시만 맡습니다.
-              위치는 웹의 요청과 앱 복귀 시점에 좌표나 거부 상태를 돌려줍니다.
-              뒤로가기는 안드로이드에서만 웹뷰를 되돌리고 더 돌아갈 곳이 없으면
-              두 번 눌러 종료합니다. 웹뷰의 상하단 여백과 쿠키, 자바스크립트,
-              위치 권한은 네이티브에서 켜 두고 새 창은 막았습니다.
-            </p>
-
-            <h4>스토어 심사를 통과했습니다</h4>
-            <p>
-              양대 스토어에 실제로 배포했습니다. 앱스토어 심사를 위해
-              <code>Info.plist</code>에 위치 권한 사유를 명시했습니다. 사용 중
-              접근과 상시 접근 항목에는 주변 추천 서비스를 위해 위치가
-              필요하다는 설명을, 백그라운드 항목에는 주변 정보를 지속 제공하기
-              위함이라는 설명을 각각 적었습니다.
-            </p>
-            <p>
-              결제는 토스 PG를 연동했습니다. 다날과 KICC, 포트원을 이미 붙여 본
-              터라 공식 문서만으로 진행했고 특별히 막힌 곳은 없었습니다.
-            </p>
-          </div>
-          <div class="infobox">
-            <div class="ib-head">쓸모</div>
-            <div class="figph" data-image="07-sseulmo" data-alt="쓸모 앱 스크린샷">
-              <span class="label">IMAGE 07</span>
-              <div class="desc">
-                <b>앱 스크린샷 3종</b><br />지도 기반 업체 탐색, 업체 상세, 결제
-                화면. 실제 기기 스크린샷을 3단 배치. <b>1200×800</b>
-              </div>
-            </div>
-            <table>
-              <tr>
-                <th>웹</th>
-                <td>2025.11 ~ 2026.04 · 226 / 330 (68%)</td>
-              </tr>
-              <tr>
-                <th>앱</th>
-                <td>2025.08 ~ 2026.04 · 48 / 48 (100%)</td>
-              </tr>
-              <tr>
-                <th>앱 스택</th>
-                <td>React Native 0.79, Expo 53</td>
-              </tr>
-              <tr>
-                <th>결제</th>
-                <td>토스페이먼츠</td>
-              </tr>
-              <tr>
-                <th>배포</th>
-                <td>
-                  <a
-                    href="https://apps.apple.com/kr/app/id6755811029"
-                    target="_blank"
-                    rel="noopener"
-                    >App Store</a
-                  >
-                  ·
-                  <a
-                    href="https://play.google.com/store/apps/details?id=com.sseulmo"
-                    target="_blank"
-                    rel="noopener"
-                    >Google Play</a
-                  >
-                </td>
-              </tr>
-            </table>
-          </div>
-        </div>
-
-        <!-- 3.6 -->
-        <h3 id="s3-6">
-          <span class="sec">3.6.</span>more — 모임·클래스 플랫폼
-        </h3>
-
-        <div class="split">
-          <div class="split-main">
-            <p>
-              사용자가 모임을 열거나 참여하는 서비스입니다. 일일 모임과 정기
-              모임이 있고, 전문가 인증을 받은 사용자는 클래스를 열 수 있습니다.
-              클래스는 호스트가 참여자에게 정보를 제공하는 방식이라는 점에서
-              일반 모임과 다릅니다.
-            </p>
-
-            <h4>서비스의 중추가 채팅에 몰려 있습니다</h4>
-            <p>
-              모임마다 단체 채팅방이 열리고 필요하면 1:1 채팅도 가능합니다.
-              채팅방 안에 위치 공유와 1/N 정산, 일정 변경 투표, 미디어 전송이
-              들어 있어 서비스의 핵심 기능 상당수가 채팅에 모여 있습니다. 그래서
-              특히 신경 써서 작업했습니다.
-            </p>
-            <p>
-              WebSocket과 STOMP로 구현하고 관련 로직을
-              <code>useSocket.ts</code> 커스텀 훅으로 묶어 연결과 연결 상태,
-              해제, 구독, 발행을 반환하는 형태로 정리했습니다. 도배와 외부 거래
-              유도, 개인정보 유출을 막는 정규식 가드도 넣었습니다.
-            </p>
-
-            <h4>모임 등록 때 AI가 성향 질문을 만듭니다</h4>
-            <p>
-              모임을 등록하는 시점에 AI가 모임 소개를 읽고 돈과 시간, 분위기,
-              뒷풀이처럼 분야별 질문을 생성합니다. 호스트는 각 질문에서 자신이
-              선호하는 답을 미리 고릅니다. 나중에 참여자가 같은 질문에 답하면 두
-              답을 비교해 매칭률이 나옵니다. 모임 관리 화면에서는 질문을 새로
-              만들지 않고 호스트가 골라 둔 선호 답만 수정합니다.
-            </p>
-          </div>
-          <div class="infobox">
-            <div class="ib-head">more</div>
-            <div class="figph" data-image="08-more" data-alt="more 채팅방 화면">
-              <span class="label">IMAGE 08</span>
-              <div class="desc">
-                <b>채팅방 기능 화면</b><br />1/N 정산, 일정 변경 투표, 위치
-                공유가 보이는 채팅방. 기능이 한 화면에 모여 있다는 점이 핵심.
-                <b>600×900</b>
-              </div>
-            </div>
-            <table>
-              <tr>
-                <th>기간</th>
-                <td>2026.08 ~ 2026.10</td>
-              </tr>
-              <tr>
-                <th>기여</th>
-                <td>153 / 267 (57%)</td>
-              </tr>
-              <tr>
-                <th>규모</th>
-                <td>TS 272개 · 페이지 43개</td>
-              </tr>
-              <tr>
-                <th>스택</th>
-                <td>
-                  Next 16 App Router, React 19, TanStack Query, Jotai, Zod 4
-                </td>
-              </tr>
-              <tr>
-                <th>실시간</th>
-                <td>WebSocket + STOMP, SockJS</td>
-              </tr>
-              <tr>
-                <th>상태</th>
-                <td>2026.10.31 마무리 예정</td>
-              </tr>
-            </table>
-          </div>
-        </div>
-
-        <!-- 3.7 -->
-        <h3 id="s3-7">
-          <span class="sec">3.7.</span>L.Scan — 제품안전 셀프체크
-        </h3>
-
-        <div class="split">
-          <div class="split-main">
-            <p>
-              롯데중앙연구소 안전센터가 기획하고 자사가 개발한 제품안전 셀프체크
-              앱입니다. 롯데 유통사에서 파는 상품의 라벨을 카메라로 찍으면
-              안전인증 정보와 신고 내용을 확인할 수 있습니다. 스토어에 공개하지
-              않은 사내 업무용 프로그램이며, 웹으로 만들어 하이브리드로 패킹해
-              앱으로 냈습니다.
-            </p>
-            <p>
-              심사에서는 OCR과 정부 OPEN API를 연동해 복잡한 인증번호 확인
-              절차를 줄인 점, 여러 인증번호를 촬영 한 번으로 판정하는 효율성,
-              불필요한 요소를 줄인 직관적인 화면이 평가받았습니다. 사내
-              업무용임에도 기술적 혁신성과 현장 업무 기여도를 인정받은
-              결과입니다. 수상은 서비스 전체에 대한 것이고, 맡은 영역은 아래
-              관리자 페이지와 사용자 화면입니다.
-            </p>
-
-            <h4>관리자 페이지 — 화면과 API를 처음부터 붙였습니다</h4>
-            <p>
-              레이아웃과 메뉴부터 만들었습니다. 사이드 탭과 라우트, 그리고
-              목록과 상세에서 공통으로 쓰는 틀인 테이블과 페이지네이션, 정보
-              카드를 잡았습니다. 관리자 로그인과 로그인 가드를 넣고, 토큰 없이
-              보내야 하는 로그인 요청을 위해 인증을 건너뛰는 처리를 뒀습니다.
-            </p>
-            <p>
-              대시보드는 기간 조회와 품목별 유효·비유효 집계, 추이 차트를 API와
-              연결했습니다. 요청 목록은 목록과 필터, 상세를 연동하고 품목과
-              제품명 컬럼을 더했습니다. 품목 목록은 전기용품과 생활용품,
-              어린이용품, 화학제품, 전파적합성 다섯 가지를 목록과 상세로 붙이고
-              기록 삭제와 외부 인증 검색 링크를 넣었습니다.
-            </p>
-            <p>
-              운영 관리에서는 환경 설정에 담당자와 인증코드, 월별 OCR 한도를
-              두고 공지와 이용가이드의 등록, 수정, 삭제를 연동했습니다. 목록
-              필터 결과를 엑셀로 받는 API도 연결했습니다. 조회 조건은 URL에
-              고정해 새로고침이나 공유에도 유지되게 했고, 시간 표시는 한국
-              시간으로 맞췄습니다.
-            </p>
-
-            <h4>사용자 화면 — 같은 조회 결과를 쓰는 쪽을 다듬었습니다</h4>
-            <p>
-              조회할 파일을 고르는 흐름을 추가하고, 결과 요약의 유효성 판정과
-              상세 화면, 결과 완료 상태를 고쳤습니다. 이력 보기 화면의 로딩과
-              동작을 수정하면서 푸터에 하드코딩된 값을 제거했고, 처리 결과를
-              알리는 토스트를 넣었습니다. 시스템 공지 노출과 공지·이용가이드로의
-              이동도 손봤습니다. 로그인 화면에서는 관리자 하드코딩을 빼고 실패
-              문구를 바꿨으며, 조회 요청에 기기 키를 붙였습니다.
-            </p>
-          </div>
-          <div class="infobox">
-            <div class="ib-head">L.Scan</div>
-            <div
-              class="figph"
-              data-image="09-lscan"
-              data-alt="L.Scan 관리자 대시보드"
-            >
-              <span class="label">IMAGE 09</span>
-              <div class="desc">
-                <b>관리자 대시보드</b><br />품목별 유효·비유효 집계와 추이
-                차트가 보이는 화면. 본인 담당 영역이라 이 이미지가 가장 중요.
-                <b>1200×750</b>
-              </div>
-            </div>
-            <table>
-              <tr>
-                <th>기간</th>
-                <td>2024.10 ~ 2025.01</td>
-              </tr>
-              <tr>
-                <th>기여</th>
-                <td>81 / 229 (35%) · 관리자 담당</td>
-              </tr>
-              <tr>
-                <th>규모</th>
-                <td>TS 136개 · 페이지 13개</td>
-              </tr>
-              <tr>
-                <th>스택</th>
-                <td>Next 14 Pages Router, react-query, Jotai, chart.js</td>
-              </tr>
-              <tr>
-                <th>기획</th>
-                <td>롯데중앙연구소 안전센터</td>
-              </tr>
-              <tr>
-                <th>수상</th>
-                <td>2024 스마트앱어워드<br />생활안전분야 <b>대상</b></td>
-              </tr>
-            </table>
-          </div>
-        </div>
-
-        <!-- 3.8 -->
-        <h3 id="s3-8">
-          <span class="sec">3.8.</span>썸띵 — B2B 상품 관리 시스템
-        </h3>
-
-        <div class="split">
-          <div class="split-main">
-            <p>
-              2025년 9월부터 11월까지 <strong>두 달 동안 297커밋</strong>을
-              작성했습니다. 전체 644커밋 중 46%입니다. 프로젝트 자체는 3월에
-              시작했지만 본인은 9월에 합류했습니다. TypeScript 파일은
-              195개입니다.
-            </p>
-            <p>
-              직원 25~50명 규모의 썸띵코퍼레이션에서 스프레드시트와 파워포인트로
-              하던 내부 업무를 하나의 시스템으로 묶는 프로젝트입니다. 상품과
-              SKU, 옵션, 공급사 관리에 비교 화면이 붙습니다.
-            </p>
-            <p>
-              엑셀로 처리하던 작업과 상품을 업로드해 쓸 수 있게 하는 기능을
-              만들었습니다. 대용량 파싱과 검증이 도는 동안 로딩 상태와 화면
-              표시를 확실히 처리해 이중 클릭 같은 실수를 막았습니다. UX 회의를
-              여러 차례 거쳐, 기존 업무 방식은 유지하면서 필요한 부분만 더하는
-              쪽으로 갔습니다.
-            </p>
-            <p>
-              <a href="#s3-1">eticket</a>에도 비슷한 기능이 있습니다. 템플릿을
-              내려받아 정보를 채워 올리면 해당 고객들에게 초대권 성격의 티켓을
-              대량 발송합니다. 같은 패턴을 다른 도메인에 한 번 더 구현해 본
-              셈입니다.
-            </p>
-          </div>
-          <div class="infobox">
-            <div class="ib-head">썸띵</div>
-            <div
-              class="figph"
-              data-image="11-sumthing"
-              data-alt="썸띵 상품 업로드 화면"
-            >
-              <span class="label">IMAGE 11</span>
-              <div class="desc">
-                <b>상품 업로드·비교 화면</b><br />엑셀 업로드 중이거나 SKU
-                비교가 보이는 관리 화면. 내부 도구라 화려한 랜딩보다 이 화면이
-                맞습니다. <b>1200×750</b>
-              </div>
-            </div>
-            <table>
-              <tr>
-                <th>기간</th>
-                <td>2025.09 ~ 2025.11 (합류 후 두 달)</td>
-              </tr>
-              <tr>
-                <th>기여</th>
-                <td>297 / 644 (46%)</td>
-              </tr>
-              <tr>
-                <th>규모</th>
-                <td>TS 195개</td>
-              </tr>
-              <tr>
-                <th>성격</th>
-                <td>B2B 내부 상품 관리</td>
-              </tr>
-            </table>
-          </div>
-        </div>
-
-        <!-- ========== 4 ========== -->
-        <h2 id="s4"><span class="sec">4.</span>공용 자산</h2>
-
-        <h3>
-          <span class="sec">4.1.</span>@freewier2/things — 사내 공용 라이브러리
-        </h3>
-        <p>
-          98커밋 중 51개를 작성했습니다. Vite 라이브러리 빌드에 Storybook과
-          Vitest, husky를 붙였습니다. 필수 유틸을 프로젝트마다 다시 쓰는
-          피로감에서 시작했습니다. 템플릿에 넣는 대신 npm private으로 배포해
-          템플릿을 쓰지 않는 프로젝트에서도 쓸 수 있게 했고, 테스트와 React
-          생태계를 얹어 커스텀 훅도 함께 배포합니다. 코드를 고쳐 GitHub에 올리고
-          태그를 만들어 push하면 GitHub Actions가 배포합니다.
-        </p>
-
-        <h4>하위 호환 사고</h4>
-        <p>
-          <code>useMediaQuery</code>를 만들며 다른 함수를 가져오는 과정에서
-          Cursor가 기존 함수까지 임의로 바꿨고, 그 함수를 쓰던 프로젝트에서 타입
-          에러가 났습니다. 되돌린 뒤 <code>breaking-changes.mdc</code> 규칙을
-          추가했습니다. 라이브러리를 배포한다는 것이 무엇을 책임지는 일인지 알게
-          된 사건입니다.
-        </p>
-
-        <h4>Swagger 코드 생성 커스텀 템플릿</h4>
-        <p>
-          생성된 API 클라이언트에 매번 토큰 재발급 로직을 덧붙이던 작업과,
-          파라미터가 <code>filter</code>로 한 번 감싸지는 사내 GET 규칙에 맞춰
-          필터를 정리하는 작업을 템플릿 자체에 넣었습니다. 위지윅이 필요할 때는
-          주 사용자인 관리자에게 가장 익숙한 네이버 스마트에디터를 추천했고,
-          프로젝트마다 새로 붙이는 반복을 없애려
-          <code>things-smart-editor</code>로 떼어 냈습니다.
-        </p>
-
-        <h3><span class="sec">4.2.</span>React Native 템플릿</h3>
-        <p>
-          15커밋 전부 본인 작업입니다. 웹뷰 설정과 브릿지, 그리고 자주 쓰는 소셜
-          로그인과 딥링크, 위치, FCM을 템플릿으로 묶어 다음 작업의 공수를 줄이고
-          일관된 구조를 주도록 했습니다. 팀 표준으로 두고 피드백을 받아
-          다듬었습니다. 실제 운영 중인 앱은 <a href="#s3-5">쓸모</a>이고,
-          템플릿은 그 설정을 다음 작업에 재사용할 수 있게 정리한 결과입니다.
-        </p>
-
-        <h3><span class="sec">4.3.</span>Next.js 프로젝트 템플릿</h3>
-        <p>
-          설계와 방향은 팀원 전체가 함께 잡았고 포함 범위도 같이 정했습니다.
-          실제 생성과 관리는 동료가 전담했고, 본인은 설계 논의와 사용 피드백
-          쪽으로 참여했습니다. 이 템플릿으로 시작한 프로젝트가
-          <a href="#s3-2">onui</a>, <a href="#s3-6">more</a>, populers 세 개이고
-          셋업 시간이 하루에서 한 시간 안쪽으로 줄었습니다. 템플릿은 팀 회의를
-          거쳐 계속 업데이트되고 있습니다.
-        </p>
-
-        <!-- ========== 5 ========== -->
-        <h2 id="s5"><span class="sec">5.</span>AI를 업무에 적용한 방식</h2>
-
-        <h3><span class="sec">5.1.</span>관리자 페이지 생성 워크플로우</h3>
-        <p>
-          여러 프로젝트를 지나며 관리자 페이지에 겹치는 기능이 많다는 것을 알게
-          됐습니다. 공지사항과 배너, 유저 관리, 관리자 관리처럼 대부분의
-          사이트에 있는 것들이고, 필요한 건 간단한 CRUD 규칙 정도였습니다.
-          어드민 프레임워크라는 것이 존재하는 이유와 같은 맥락입니다.
-        </p>
-        <p>
-          관리자 페이지는 화려한 디자인보다 사용성이 중요하다고 보고 직관적인
-          구조를 먼저 짠 뒤, 그에 맞는 사이드바와 필터, 상세 페이지, 기본
-          레이아웃 규칙을 컴포넌트로 만들어 둡니다. 그다음 각 프로젝트의 사용자
-          화면 목록과 유저 플로우, 기획을 정리한 문서를 AI에 넘기면 기본 CRUD
-          관리자 페이지가 나옵니다.
-        </p>
-
-        <div
-          class="figph"
-          data-image="10-workflow"
-          data-alt="관리자 페이지 생성 워크플로우"
-        >
-          <span class="label">IMAGE 10</span>
-          <div class="desc">
-            <b>워크플로우 다이어그램</b><br />
-            공통 컴포넌트 준비 → 화면 목록·유저 플로우 문서 작성 → AI가 CRUD
-            뼈대 생성 → 프로젝트 고유 기능 추가 → 디테일 보정. 각 단계 아래 소요
-            시간을 적고, 전후 비교(1주~1달 → 2~3일)를 함께 넣으면 설득력이
-            올라갑니다.
-            <b>1400×400</b> 가로형.
-          </div>
-        </div>
-
-        <p>
-          <a href="#s3-2">onui</a>를 예로 들면 상담과 세미나 목록, 공지사항,
-          배너, 유저 관리, 구독과 광고 결제 목록이 만들어집니다. 여기에 상담
-          신청 승낙과 세미나 개최 승낙, 세미나 취소 요청 승낙처럼 그
-          프로젝트에만 있는 기능을 더합니다. 이렇게 뼈대를 잡고 디테일만 손보면
-          <strong
-            >2~3일이면 끝납니다. 예전에는 짧아도 일주일, 길면 한 달까지
-            걸렸습니다.</strong
-          >
-        </p>
-
-        <h3><span class="sec">5.2.</span>디자인과 개발의 순서를 뒤집은 사례</h3>
-        <p>
-          이 방식으로 관리자 페이지를 만들면 클라이언트에게 보여 줄 디자인
-          시안이 없습니다. 원래는 시안을 공유하고 의견을 받아 고친 뒤 개발을
-          시작하는데, 이 흐름을 반대로 돌렸습니다. 프론트엔드에서 MVP를 먼저
-          뽑고 그것을 피그마로 옮겨 주소를 전달합니다.
-        </p>
-        <p>
-          웹사이트를 피그마로 옮기는 데는 동료가 만든 도구를 적용했습니다.
-          Playwright로 PC와 태블릿, 모바일의 전체 페이지와 모달을 캡처해 피그마
-          플러그인으로 올리는 도구이고, 설정 파일만 갈아 끼우면 다른
-          프로젝트에도 쓸 수 있습니다.
-        </p>
-        <p>
-          <a href="#s3-2">onui</a>에서 이 흐름을 끝까지 돌렸습니다. 클라이언트가
-          색상과 특정 컴포넌트의 높이 같은 부분을 지적했고, 수정한 뒤 최종
-          전달까지 마쳤습니다. 도구를 만든 것은 동료이고, 본인이 한 일은 그
-          도구를 자기 프로젝트에 적용해 순서를 뒤집은 흐름을 실제로 완주한
-          것입니다.
-        </p>
-
-        <h3><span class="sec">5.3.</span>팀 규칙</h3>
-        <p>
-          AI 도입으로 개발자 경험과 생산성을 높이자는 회의에서 규칙이
-          나왔습니다. 이후 다른 팀원이 그 내용을 기초로 실무를 진행했고 의견을
-          주고받으며 다듬었습니다.
-          <code>.cursor/rules</code> 일곱 종이 그 결과물입니다.
-        </p>
-        <p>
-          본인이 직접 더한 규칙은 셋입니다. 앞서 적은
-          <code>useApiMutation</code>과 쿼리 키 규약, 요청이 없으면 주석을 달지
-          않는다는 규칙, 그리고 AI가 백엔드에 아직 없는 API까지 프론트엔드에서
-          억지로 필터를 걸어 처리하는 문제를 막는 규칙입니다. 마지막 것에는
-          백엔드에 전달할 필요 작업 내용을 따로 정리하게 만드는 절차까지 붙여
-          팀에 공유했습니다.
-        </p>
-
-        <h3><span class="sec">5.4.</span>AI를 쓰며 지키는 선</h3>
-        <blockquote>
+          <!-- ========== 3 ========== -->
+          <h2 id="s3"><span class="sec">3.</span>프로젝트</h2>
           <p>
-            AI가 쓴 코드는 무조건 확인합니다. 양이 많으면 요약을 요구합니다.
-            확인하지 않은 코드가 쌓이면 나중에 직접 고쳐야 할 때 이해하고
-            수정하는 데 더 큰 공수가 듭니다. 작은 변경까지 AI에 맡기면 그것대로
-            낭비입니다. AI가 코드를 쓰더라도 개발자가 이해하고 통제할 수 있는
-            범위 안에 있어야 하고, 어디까지나 개발자를 돕는 수단이라 주객이
-            바뀌어선 안 된다고 봅니다.
+            아래 기간은 프로젝트 전체 기간이 아니라
+            <strong>본인이 실제로 커밋한 기간</strong>입니다.
           </p>
-        </blockquote>
 
-        <!-- ========== 6 ========== -->
-        <h2 id="s6"><span class="sec">6.</span>기타 프로젝트</h2>
-        <table class="data">
-          <tr>
-            <th>프로젝트</th>
-            <th>기간</th>
-            <th>커밋</th>
-            <th>내용</th>
-          </tr>
-          <tr>
-            <td>populers</td>
-            <td>2026.04 ~ 2026.05</td>
-            <td class="num">74 / 144</td>
-            <td>
-              인플루언서와 광고주를 매칭해 SNS 광고를 집행하고 AI 평가 후 추가
-              요청과 정산까지. WebSocket + STOMP 채팅이 주요 기능
-            </td>
-          </tr>
-          <tr>
-            <td>wier</td>
-            <td>2025.02 ~ 2026.02</td>
-            <td class="num">130 / 513</td>
-            <td>
-              자사 서비스이자 홈페이지. 랜딩 애니메이션 담당 — 드래그에 따른
-              글자 색 변화, 점등 효과, 마우스 주변 조명
-            </td>
-          </tr>
-          <tr>
-            <td>한국 중장년 협회</td>
-            <td>2025.07 (2주)</td>
-            <td class="num">31 / 31</td>
-            <td><a href="#s3-3">커넥티드456</a>의 자매 서비스. 단독 작업</td>
-          </tr>
-        </table>
+          <table class="data wide">
+            <tr>
+              <th>프로젝트</th>
+              <th>기간(본인 참여)</th>
+              <th>커밋</th>
+              <th>비중</th>
+              <th>성격</th>
+            </tr>
+            <tr>
+              <td data-label="프로젝트"><a href="#s3-1">eticket</a></td>
+              <td data-label="기간(본인 참여)">2024.06 ~ 진행 중</td>
+              <td class="num" data-label="커밋">1,173 / 2,093</td>
+              <td class="num" data-label="비중">56%</td>
+              <td data-label="성격">골프 티켓 예매</td>
+            </tr>
+            <tr>
+              <td data-label="프로젝트"><a href="#s3-3">커넥티드456</a></td>
+              <td data-label="기간(본인 참여)">2024.10 ~ 2025.08</td>
+              <td class="num" data-label="커밋">728 / 1,438</td>
+              <td class="num" data-label="비중">50%</td>
+              <td data-label="성격">중장년 취업·교육</td>
+            </tr>
+            <tr>
+              <td data-label="프로젝트"><a href="#s3-2">onui</a></td>
+              <td data-label="기간(본인 참여)">2026.05 ~ 2026.09</td>
+              <td class="num" data-label="커밋">432 / 434</td>
+              <td class="num" data-label="비중">99%</td>
+              <td data-label="성격">AI 전문가 상담</td>
+            </tr>
+            <tr>
+              <td data-label="프로젝트"><a href="#s3-8">썸띵</a></td>
+              <td data-label="기간(본인 참여)">2025.09 ~ 2025.11</td>
+              <td class="num" data-label="커밋">297 / 644</td>
+              <td class="num" data-label="비중">46%</td>
+              <td data-label="성격">B2B 상품 관리</td>
+            </tr>
+            <tr>
+              <td data-label="프로젝트"><a href="#s3-5">쓸모 (웹)</a></td>
+              <td data-label="기간(본인 참여)">2025.11 ~ 2026.04</td>
+              <td class="num" data-label="커밋">226 / 330</td>
+              <td class="num" data-label="비중">68%</td>
+              <td data-label="성격">건설 업체 연결</td>
+            </tr>
+            <tr>
+              <td data-label="프로젝트"><a href="#s3-6">more</a></td>
+              <td data-label="기간(본인 참여)">2026.08 ~ 2026.10</td>
+              <td class="num" data-label="커밋">153 / 267</td>
+              <td class="num" data-label="비중">57%</td>
+              <td data-label="성격">모임·클래스</td>
+            </tr>
+            <tr>
+              <td data-label="프로젝트"><a href="#s3-7">L.Scan</a></td>
+              <td data-label="기간(본인 참여)">2024.10 ~ 2025.01</td>
+              <td class="num" data-label="커밋">81 / 229</td>
+              <td class="num" data-label="비중">35%</td>
+              <td data-label="성격">제품안전 점검</td>
+            </tr>
+            <tr>
+              <td data-label="프로젝트">
+                <a href="#s3-4">PUBG PLAYERS TOUR</a>
+              </td>
+              <td data-label="기간(본인 참여)">2025.04 ~ 2025.07</td>
+              <td class="num" data-label="커밋">67 / 71</td>
+              <td class="num" data-label="비중">94%</td>
+              <td data-label="성격">e스포츠 대회</td>
+            </tr>
+            <tr>
+              <td data-label="프로젝트"><a href="#s3-5">쓸모 (앱)</a></td>
+              <td data-label="기간(본인 참여)">2025.08 ~ 2026.04</td>
+              <td class="num" data-label="커밋">48 / 48</td>
+              <td class="num" data-label="비중">100%</td>
+              <td data-label="성격">React Native</td>
+            </tr>
+          </table>
 
-        <div class="doc-foot">
-          이 문서의 모든 커밋 수와 파일 수, 기간은 각 저장소의 git 기록과
-          <code>package.json</code>에서 직접 확인한 값입니다. 기간은 프로젝트
-          전체 기간이 아니라 본인이 실제로 커밋한 구간이며, 팀과 함께한 작업은
-          전체 커밋 중 본인 몫을 함께 적었습니다.
+          <!-- 3.1 -->
+          <h3 id="s3-1">
+            <span class="sec">3.1.</span>eticket — 골프 티켓 예매 플랫폼
+          </h3>
+
+          <div class="split">
+            <div class="split-main">
+              <p>
+                골프 대회 일정을 알리고 티켓을 팔며 행사도 여는 서비스입니다. 주
+                사용자는 골프를 즐기는 중년층이고 회원 계정은 6,591개입니다.
+                입사 후 처음으로 초기 세팅부터 맡은 프로젝트이자, 가장 오래 붙어
+                있는 프로젝트입니다. 프론트엔드는 세 명이 거쳐 갔습니다. 본인
+                1,173커밋, 동료 479커밋, 중도 퇴사자 406커밋입니다.
+              </p>
+
+              <h4>개발 차수</h4>
+              <p>
+                1차는 2024년 6월부터 11월까지 515커밋으로 초기 세팅과 MVP,
+                예매·결제 흐름을 만들었습니다. 2차는 2025년 2월부터 9월까지
+                289커밋으로 기능을 확장하고 관리자 페이지를 재정비했고, 3차는
+                2026년 1월부터 4월까지 369커밋으로 이미 끝났습니다. 이후는 운영
+                대응 위주입니다.
+              </p>
+
+              <h4>예매 밖의 운영 기능</h4>
+              <p>
+                대회 현장에서 쓰는 전광판 실시간 추첨을 소켓으로 만들었습니다.
+                대회 운영 화면에서 추첨을 돌리면 현장 전광판에 결과가 바로
+                나갑니다. 해외 관객을 위해 PayPal 결제를 붙였고, 템플릿을
+                내려받아 명단을 채워 올리면 초대권 성격의 티켓을 대량 발송하는
+                기능도 넣었습니다.
+              </p>
+
+              <h4>처음 세팅한 프로젝트라서 생긴 빚</h4>
+              <p>
+                처음 만든 만큼 초반 코드에 가독성과 성능이 아쉬운 부분이 남았고,
+                추가 개발을 할 때마다 그 위에 쌓이는 구조였습니다. 리팩터링을
+                따로 잡는 대신 기능을 더할 때 해당 영역의 레거시를 함께 정리하는
+                방식으로 갔습니다. 대규모 정리를 거치면서 결제처럼 중추가 되는
+                기능에서 불안정성을 걷어냈습니다.
+              </p>
+              <p>
+                요구사항도 계속 움직였습니다. A라는 조건으로 좁혀 만든 기능에
+                변경이나 추가 요청이 들어오는 일이 반복됐습니다. 그래서 변경
+                작업을 할 때마다 당장의 요구만 맞추지 않고 확장 가능한 구조로
+                바꿔 두었고, 이후 추가 개발이 눈에 띄게 수월해졌습니다.
+              </p>
+
+              <h4>운영 중 에러를 사후에만 알 수 있던 구조</h4>
+              <p>
+                프로덕션 에러를 클라이언트가 직접 겪거나 CS로 접수된 것만
+                보고받았습니다. 로그를 계속 들여다보지 않는 한 실사용자가 겪은
+                에러를 제때 잡을 방법이 없었습니다.
+              </p>
+              <p>
+                Sentry를 붙이고 Slack 알림을 연결했습니다. 발생 즉시 인지가
+                가능해진 것도 컸지만, 더 큰 변화는 제보의 해상도였습니다. "A
+                기능이 안 된다"는 모호한 말을 받아도 어떤 API에서 어떤 에러가
+                났는지와 사용자의 행동 기록까지 함께 볼 수 있게 되면서 이슈
+                처리가 훨씬 수월해졌습니다.
+              </p>
+
+              <h4>관리자 페이지의 컨벤션 불일치</h4>
+              <p>
+                관리자 목록 페이지들은 UI가 획일화되어 있었지만 개발 시기와
+                담당자가 달라 컨벤션이 어긋나 있었고, 그 탓에 실제 동작이
+                페이지마다 달라지는 경우가 있었습니다. 342줄짜리
+                <code>docs/admin-state-convention.md</code>를 쓰고 리팩터링할 때
+                이 문서를 기준으로 목록 페이지를 다시 만들었습니다. 뒤에 나올
+                <a href="#s5">문서 기반 관리자 페이지 작업</a>의 출발점이 된
+                작업입니다.
+              </p>
+
+              <blockquote>
+                <p>
+                  <b>Pages Router를 고른 이유</b><br />
+                  당시 대부분의 프로젝트를 Pages Router로 작업하고 있었습니다.
+                  새 기술을 성급히 들이기보다 이미 완전히 통제할 수 있는
+                  아키텍처로 안정성을 확보하는 쪽을 택했습니다. 지금도
+                  마이그레이션 계획은 없습니다.
+                </p>
+              </blockquote>
+            </div>
+            <div class="split-side">
+              <div class="infobox">
+                <div class="ib-head">eticket</div>
+                <div class="ib-rows">
+                  <div class="ib-row">
+                    <div class="k">기간</div>
+                    <div class="v">2024.06 ~ 진행 중 (2년 4개월)</div>
+                  </div>
+                  <div class="ib-row">
+                    <div class="k">기여</div>
+                    <div class="v">1,173 / 2,093 (56%)</div>
+                  </div>
+                  <div class="ib-row">
+                    <div class="k">규모</div>
+                    <div class="v">TS 708개 · 페이지 110개</div>
+                  </div>
+                  <div class="ib-row">
+                    <div class="k">팀</div>
+                    <div class="v">프론트엔드 3명</div>
+                  </div>
+                  <div class="ib-row">
+                    <div class="k">스택</div>
+                    <div class="v">
+                      Next.js Pages Router, Jotai, RHF + Zod, Tailwind, Sentry,
+                      Firebase, Jest
+                    </div>
+                  </div>
+                  <div class="ib-row">
+                    <div class="k">성과</div>
+                    <div class="v">2025년 골프티켓 유통 점유율 1위</div>
+                  </div>
+                  <div class="ib-row">
+                    <div class="k">주소</div>
+                    <div class="v">
+                      <a
+                        href="https://www.unitix.co.kr"
+                        target="_blank"
+                        rel="noopener"
+                        >unitix.co.kr</a
+                      >
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="figph"
+                data-image="03-eticket"
+                data-alt="eticket 메인 화면"
+              >
+                <span class="label">IMAGE 03</span>
+                <div class="desc">
+                  <b>메인 화면</b><br />대회 목록과 티켓 구매 플로우가 보이는
+                  화면. 모바일 뷰 권장. <b>600×900</b>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 3.2 -->
+          <h3 id="s3-2">
+            <span class="sec">3.2.</span>onui — AI 기반 전문가 상담 플랫폼
+          </h3>
+
+          <div class="split">
+            <div class="split-main">
+              <p>
+                특정 분야 전문가에게 상담을 받는 서비스입니다. AI 챗봇과
+                대화하거나 성향 질문에 답해 전문가를 추천받고, 대면과 전화, 화상
+                중에서 고릅니다. 전문가는 세미나도 열 수 있는데 상담과 달리
+                티케팅 방식에 가깝습니다.
+              </p>
+
+              <h4>화상 상담을 직접 만들었습니다</h4>
+              <p>
+                외부 화상 SDK에 기대지 않고 LiveKit을 자체 호스팅했습니다. 화상
+                통화와 화면 공유, 채팅, 음성의 텍스트 변환, AI 분석을 한 상담
+                세션 안에 담았습니다.
+              </p>
+
+              <h4>LLM과 RAG를 상담 흐름 전체에 배치했습니다</h4>
+              <table class="data wide">
+                <tr>
+                  <th>기능</th>
+                  <th>입력</th>
+                  <th>산출과 쓰임</th>
+                </tr>
+                <tr>
+                  <td data-label="기능">AI 챗봇</td>
+                  <td data-label="입력">선택한 분야 + 이용자 질의</td>
+                  <td data-label="산출과 쓰임">
+                    참고용 상담 답변, 같은 대화로 전문가 추천
+                  </td>
+                </tr>
+                <tr>
+                  <td data-label="기능">사전 체크리스트</td>
+                  <td data-label="입력">상담 주제, 직전 답변</td>
+                  <td data-label="산출과 쓰임">
+                    꼬리를 무는 사전 질문, 매칭과 상담 신청의 참고 자료
+                  </td>
+                </tr>
+                <tr>
+                  <td data-label="기능">상담 요약</td>
+                  <td data-label="입력">화상 음성의 텍스트 기록</td>
+                  <td data-label="산출과 쓰임">
+                    이용자·관리자가 다시 보는 상담 노트
+                  </td>
+                </tr>
+                <tr>
+                  <td data-label="기능">리포트 초안</td>
+                  <td data-label="입력">상담 기록</td>
+                  <td data-label="산출과 쓰임">
+                    핵심 요약과 조언 초안 → 전문가 검토 후 최종 리포트
+                  </td>
+                </tr>
+                <tr>
+                  <td data-label="기능">유사 사례 검색</td>
+                  <td data-label="입력">비식별 상담·문답 DB</td>
+                  <td data-label="산출과 쓰임">
+                    답변 근거, 비슷한 실무 사례 제시
+                  </td>
+                </tr>
+              </table>
+
+              <h4>넉 달에 130페이지가 가능했던 이유</h4>
+              <p>
+                세 가지를 겹쳤습니다. 템플릿으로 초기 세팅과 공통 컴포넌트, 훅의
+                공수를 줄였고, 템플릿에 넣기엔 너무 국소적인 코드는 다른
+                프로젝트와 개인 코드베이스에서 가져왔습니다. 그리고 관리자
+                페이지는 문서와 규칙 기반 AI 워크플로우로 처리했습니다. 셋 중
+                공수가 가장 크게 줄어든 것은 세 번째입니다.
+              </p>
+
+              <h4>캐시가 남아 사용자 경험을 망치던 문제</h4>
+              <p>
+                react-query 전역 캐시 설정 탓에 등록이나 수정 뒤에도 이전 캐시가
+                남았습니다.
+                <code>useMutation</code>을 <code>useApiMutation</code>으로 감싸
+                갱신할 쿼리 키를 선언하게 만들고, 페이지나 컴포넌트에서
+                <code>invalidateQueries</code>를 직접 부르지 못하도록 규칙으로
+                고정했습니다.
+              </p>
+              <p>
+                쿼리 키 규약도 손봤습니다. 기존에는
+                <code>useGetChatMembers</code>를 쓰면서 키는
+                <code>['members','chat']</code>이라 훅 이름과 키가 어긋나
+                헷갈렸습니다. 훅 이름에서 <code>use</code>만 뗀
+                <code>getChatMembers</code> 형태로 통일해 초기화할 쿼리를
+                명시적으로 지정할 수 있게 했고, 이 규칙을 팀 AI 규칙 파일에 적어
+                같은 실수가 반복되지 않게 했습니다.
+              </p>
+            </div>
+            <div class="split-side">
+              <div class="infobox">
+                <div class="ib-head">onui (yeoro)</div>
+                <div class="ib-rows">
+                  <div class="ib-row">
+                    <div class="k">기간</div>
+                    <div class="v">2026.05 ~ 2026.09 (4개월)</div>
+                  </div>
+                  <div class="ib-row">
+                    <div class="k">기여</div>
+                    <div class="v">432 / 434 (99%)</div>
+                  </div>
+                  <div class="ib-row">
+                    <div class="k">규모</div>
+                    <div class="v">TS 408개 · 페이지 130개</div>
+                  </div>
+                  <div class="ib-row">
+                    <div class="k">스택</div>
+                    <div class="v">
+                      Next 16, React 19, TanStack Query 5, Jotai, Zod 4,
+                      Tailwind 4, shadcn/ui
+                    </div>
+                  </div>
+                  <div class="ib-row">
+                    <div class="k">실시간</div>
+                    <div class="v">LiveKit 자체 호스팅, STOMP</div>
+                  </div>
+                  <div class="ib-row">
+                    <div class="k">주소</div>
+                    <div class="v">
+                      <a href="https://onui.top/" target="_blank" rel="noopener"
+                        >onui.top</a
+                      >
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="figph"
+                data-image="04-onui"
+                data-alt="onui 화상 상담 화면"
+              >
+                <span class="label">IMAGE 04</span>
+                <div class="desc">
+                  <b>화상 상담 화면</b><br />영상 그리드와 자막(STT)이 함께
+                  보이는 상담 세션. 이 프로젝트의 핵심이라 가장 공들일 이미지.
+                  <b>1200×750</b>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <h4>화상 채팅 화면</h4>
+          <div class="shot-grid">
+            <div
+              class="figph"
+              data-image="04-onui-1"
+              data-alt="onui 화상 상담 화면 1"
+            >
+              <span class="label">IMAGE 04-1</span>
+              <div class="desc">화상 상담 화면 1</div>
+            </div>
+            <div
+              class="figph"
+              data-image="04-onui-2"
+              data-alt="onui 화상 상담 화면 2"
+            >
+              <span class="label">IMAGE 04-2</span>
+              <div class="desc">화상 상담 화면 2</div>
+            </div>
+            <div
+              class="figph"
+              data-image="04-onui-3"
+              data-alt="onui 화상 상담 화면 3"
+            >
+              <span class="label">IMAGE 04-3</span>
+              <div class="desc">화상 상담 화면 3</div>
+            </div>
+            <div
+              class="figph"
+              data-image="04-onui-4"
+              data-alt="onui 화상 상담 화면 4"
+            >
+              <span class="label">IMAGE 04-4</span>
+              <div class="desc">화상 상담 화면 4</div>
+            </div>
+            <div
+              class="figph"
+              data-image="04-onui-5"
+              data-alt="onui 화상 상담 화면 5"
+            >
+              <span class="label">IMAGE 04-5</span>
+              <div class="desc">화상 상담 화면 5</div>
+            </div>
+            <div
+              class="figph"
+              data-image="04-onui-6"
+              data-alt="onui 화상 상담 화면 6"
+            >
+              <span class="label">IMAGE 04-6</span>
+              <div class="desc">화상 상담 화면 6</div>
+            </div>
+          </div>
+
+          <!-- 3.3 -->
+          <h3 id="s3-3">
+            <span class="sec">3.3.</span>커넥티드456 — 중장년 취업·교육 플랫폼
+          </h3>
+
+          <div class="split">
+            <div class="split-main">
+              <p>
+                구직자와 기업을 매칭하고 채용 공고를 올려 중장년 채용을 돕는
+                플랫폼입니다. 라운지에서 취업과 생활 정보를 제공하고 커뮤니티와
+                이벤트도 운영합니다. 부트캠프는 플랫폼에서 신청을 받고 관리자
+                페이지에서 명단을 관리합니다.
+                <strong
+                  >본인 커밋 수로는 eticket 다음으로 큰 프로젝트입니다.</strong
+                >
+              </p>
+
+              <h4>PC와 모바일을 라우트에서 갈랐습니다</h4>
+              <p>
+                중장년 대상이라 PC와 모바일의 UI 차이가 컸고, 클라이언트가
+                반응형이 아닌 적응형을 명시해 요청했습니다. 한 컴포넌트 안에서
+                분기할 수도 있었지만 스파게티 코드가 될 가능성이 보였습니다.
+                <code>src/pages/[userAgent]/</code> 라우트로 과감히 나누고
+                <code>PcMain</code>과 <code>MobileMain</code>을 따로
+                렌더링했습니다. 유지보수 비용이 적지는 않았지만, 한 컴포넌트에
+                둘을 섞었을 때를 가정하면 그래도 적은 쪽이었다고 봅니다.
+              </p>
+
+              <h4>글자 크기를 사용자에 맞춰 다시 잡았습니다</h4>
+              <p>
+                처음에는 다른 프로젝트와 같은 표준 폰트 크기로 개발했습니다.
+                이후 중장년 사용자를 고려해 기본 폰트를 16px에서 18px로 키우고,
+                다른 요소의 크기도 눈에 잘 들어오면서 전체 균형은 유지되도록
+                다시 조정했습니다.
+              </p>
+
+              <h4>가장 기억에 남는 프로젝트</h4>
+              <p>
+                프론트엔드 두 명으로 시작했는데 한 명이 중도에 퇴사했습니다.
+                한동안 혼자 진행하다 새 팀원이 합류했지만, 기획의 규모가 크고
+                히스토리를 따라가기 어려워 실질적인 작업은 거의 혼자 했습니다.
+              </p>
+              <p>
+                초기 세팅과 MVP를 맡았고, 2차 개발에서 넘어온 이력서 페이지는
+                버그가 많아 아예 새로 만들었습니다. 설 연휴를 반납하고 버그를
+                잡은 적도 있습니다. 히스토리가 끊긴 코드를 떠안아 안정화까지
+                끌고 간 시간이 길었던 만큼 가장 기억에 남는 프로젝트입니다.
+              </p>
+
+              <p>
+                국민건강보험 API를 연동해 자격과 경력 확인에 필요한 정보를 받아
+                왔고, 인증 UI는 외부 위젯 대신 직접 만들어 붙였습니다. PWA는
+                클라이언트가 하이브리드 앱 대신 모바일 브라우저의 홈 화면 추가를
+                앱처럼 쓰고 싶어 해서 넣었습니다. 이력서 PDF는 회원 ID를 서버에
+                넘겨 서버가 만든 문서를 프론트엔드에서 내려받는 방식입니다. 자매
+                서비스로 한국 중장년 협회 사이트가 있습니다. 2025년 7월에 2주
+                동안 31커밋을 혼자 작성했습니다.
+              </p>
+            </div>
+            <div class="split-side">
+              <div class="infobox">
+                <div class="ib-head">커넥티드456</div>
+                <div class="ib-rows">
+                  <div class="ib-row">
+                    <div class="k">기간</div>
+                    <div class="v">2024.10 ~ 2025.08 (10개월)</div>
+                  </div>
+                  <div class="ib-row">
+                    <div class="k">기여</div>
+                    <div class="v">728 / 1,438 (50%)</div>
+                  </div>
+                  <div class="ib-row">
+                    <div class="k">규모</div>
+                    <div class="v">TS 742개 · 페이지 60개</div>
+                  </div>
+                  <div class="ib-row">
+                    <div class="k">스택</div>
+                    <div class="v">
+                      Next 15 Pages Router, react-query, Jotai, Sentry,
+                      next-pwa, 스마트에디터
+                    </div>
+                  </div>
+                  <div class="ib-row">
+                    <div class="k">특징</div>
+                    <div class="v">PC·모바일 적응형 분리</div>
+                  </div>
+                  <div class="ib-row">
+                    <div class="k">현재</div>
+                    <div class="v">유지보수 종료, 인수인계 완료</div>
+                  </div>
+                  <div class="ib-row">
+                    <div class="k">주소</div>
+                    <div class="v">
+                      <a
+                        href="https://connected456.co.kr"
+                        target="_blank"
+                        rel="noopener"
+                        >connected456.co.kr</a
+                      >
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="figph"
+                data-image="05-connected"
+                data-alt="커넥티드456 PC와 모바일 화면"
+              >
+                <span class="label">IMAGE 05</span>
+                <div class="desc">
+                  <b>PC·모바일 화면 비교</b><br />같은 메인을 PC와 모바일로
+                  나란히. 레이아웃이 아예 다르다는 점이 드러나야 합니다.
+                  <b>1400×800</b>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 3.4 -->
+          <h3 id="s3-4">
+            <span class="sec">3.4.</span>PUBG PLAYERS TOUR — e스포츠 대회 사이트
+          </h3>
+
+          <div class="split">
+            <div class="split-main">
+              <p>
+                크래프톤이 주최한 대회 사이트입니다. 배틀그라운드 접속 첫 화면
+                배너 광고에 링크가 걸려 오픈 첫날 트래픽이 몰렸고 일일 방문자
+                10만 명을 넘겼습니다.
+              </p>
+              <p>
+                랜딩만 있는 사이트가 아닙니다. 메인에 공식 영상 배너와 진행
+                방식, 대회 캐러셀, 외부 링크, 공지가 있고 헤더 탭으로 일정과
+                랭킹, 통계, 공지 페이지가 붙습니다. 대회 상세에는 참가 신청과
+                경기·중계 일정, 중계 플랫폼 링크가 있습니다. 랭킹은 관리자가
+                입력하고, 킬 수와 KDA, 아이템 사용 횟수 같은 통계는 외부 API에서
+                받아 옵니다.
+              </p>
+
+              <h4>일주일 만에 실서버까지</h4>
+              <p>
+                실제 작업 시작이 대회 시작 일주일 전이었습니다. 빠르고 안정적인
+                MVP가 최우선이었고, 초기 버전을 일주일 만에 실서버 배포까지
+                마쳤습니다. 이후 대회가 진행되며 데이터가 쌓이는 랭킹과 통계,
+                결과 페이지와 관리자 페이지를 더하고 유지보수를 이어 갔습니다.
+                기획은 클라이언트가 줬고, 기존 아임웹으로 운영하던 디자인이
+                만족스럽지 않아 디자이너가 새로 작업했습니다.
+              </p>
+
+              <h4>대회가 끝난 뒤에 정리한 것</h4>
+              <p>
+                대회 당시에는 일정을 맞추는 쪽에 무게를 둬 캐싱 전략을 따로
+                세우지 않았습니다. 19개 페이지가 모두 클라이언트 렌더링이었고
+                <code>QueryClient</code>도 기본값이었습니다. 운영이 끝난 뒤 전역
+                캐시 정책과 Sentry 샘플링을 정리해 불필요한 요청 증폭과 모니터링
+                비용을 걷어 냈습니다.
+              </p>
+            </div>
+            <div class="split-side">
+              <div class="infobox">
+                <div class="ib-head">PUBG PLAYERS TOUR</div>
+                <div class="ib-rows">
+                  <div class="ib-row">
+                    <div class="k">기간</div>
+                    <div class="v">2025.04 ~ 2025.07 (집중 3주)</div>
+                  </div>
+                  <div class="ib-row">
+                    <div class="k">기여</div>
+                    <div class="v">67 / 71 (94%)</div>
+                  </div>
+                  <div class="ib-row">
+                    <div class="k">규모</div>
+                    <div class="v">TS 131개 · 페이지 19개</div>
+                  </div>
+                  <div class="ib-row">
+                    <div class="k">스택</div>
+                    <div class="v">
+                      Next 15, React 19, RHF + Zod, Tailwind 4
+                    </div>
+                  </div>
+                  <div class="ib-row">
+                    <div class="k">트래픽</div>
+                    <div class="v">일일 방문자 10만 이상</div>
+                  </div>
+                  <div class="ib-row">
+                    <div class="k">클라이언트</div>
+                    <div class="v">크래프톤</div>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="figph"
+                data-image="06-pubg"
+                data-alt="PUBG PLAYERS TOUR 메인과 통계"
+              >
+                <span class="label">IMAGE 06</span>
+                <div class="desc">
+                  <b>메인 + 통계 페이지</b><br />공식 영상 배너가 있는 메인과,
+                  외부 API로 받아 온 팀 통계 표를 위아래로. <b>1200×1000</b>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 3.5 -->
+          <h3 id="s3-5">
+            <span class="sec">3.5.</span>쓸모 — 건설 업체 연결 서비스 (웹 + 앱)
+          </h3>
+
+          <div class="split">
+            <div class="split-main">
+              <p>
+                네이버 지도를 기반으로 주변이나 입력한 주소의 건설 관련 업체를
+                연결하는 서비스입니다.
+              </p>
+
+              <h4>웹을 중심에 두고 네이티브는 앱 전용 기능만</h4>
+              <p>
+                대부분을 웹으로 구현하고 네이티브는 앱에서만 가능한 영역으로
+                한정했습니다. FCM과 외부 앱 및 결제 스킴, 소셜 로그인, 위치,
+                공유, 안드로이드 뒤로가기입니다.
+              </p>
+              <p>
+                통신은 타입이 있는 JSON을 <code>postMessage</code>로 주고받는
+                방식입니다. 다만 로그인만 예외로 뒀습니다. 네이티브 SDK로
+                로그인한 뒤 토큰을 메시지로 보내지 않고
+                <code>injectJavaScript</code>로 웹 콜백 URL에 붙여 이동시킵니다.
+                푸시는 네이티브가 토큰을 받아 웹이 준비됐다는 신호를 받는 시점에
+                넘기고 포그라운드 표시만 맡습니다. 위치는 웹의 요청과 앱 복귀
+                시점에 좌표나 거부 상태를 돌려줍니다. 뒤로가기는
+                안드로이드에서만 웹뷰를 되돌리고 더 돌아갈 곳이 없으면 두 번
+                눌러 종료합니다. 웹뷰의 상하단 여백과 쿠키, 자바스크립트, 위치
+                권한은 네이티브에서 켜 두고 새 창은 막았습니다.
+              </p>
+
+              <h4>스토어 심사를 통과했습니다</h4>
+              <p>
+                양대 스토어에 실제로 배포했습니다. 앱스토어 심사를 위해
+                <code>Info.plist</code>에 위치 권한 사유를 명시했습니다. 사용 중
+                접근과 상시 접근 항목에는 주변 추천 서비스를 위해 위치가
+                필요하다는 설명을, 백그라운드 항목에는 주변 정보를 지속 제공하기
+                위함이라는 설명을 각각 적었습니다.
+              </p>
+              <p>
+                결제는 토스 PG를 연동했습니다. 다날과 KICC, 포트원을 이미 붙여
+                본 터라 공식 문서만으로 진행했고 특별히 막힌 곳은 없었습니다.
+              </p>
+            </div>
+            <div class="split-side">
+              <div class="infobox">
+                <div class="ib-head">쓸모</div>
+                <div class="ib-rows">
+                  <div class="ib-row">
+                    <div class="k">웹</div>
+                    <div class="v">2025.11 ~ 2026.04 · 226 / 330 (68%)</div>
+                  </div>
+                  <div class="ib-row">
+                    <div class="k">앱</div>
+                    <div class="v">2025.08 ~ 2026.04 · 48 / 48 (100%)</div>
+                  </div>
+                  <div class="ib-row">
+                    <div class="k">앱 스택</div>
+                    <div class="v">React Native 0.79, Expo 53</div>
+                  </div>
+                  <div class="ib-row">
+                    <div class="k">결제</div>
+                    <div class="v">토스페이먼츠</div>
+                  </div>
+                  <div class="ib-row">
+                    <div class="k">배포</div>
+                    <div class="v">
+                      <a
+                        href="https://apps.apple.com/kr/app/id6755811029"
+                        target="_blank"
+                        rel="noopener"
+                        >App Store</a
+                      >
+                      ·
+                      <a
+                        href="https://play.google.com/store/apps/details?id=com.sseulmo"
+                        target="_blank"
+                        rel="noopener"
+                        >Google Play</a
+                      >
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="figph"
+                data-image="07-sseulmo"
+                data-alt="쓸모 앱 스크린샷"
+              >
+                <span class="label">IMAGE 07</span>
+                <div class="desc">
+                  <b>앱 스크린샷 3종</b><br />지도 기반 업체 탐색, 업체 상세,
+                  결제 화면. 실제 기기 스크린샷을 3단 배치. <b>1200×800</b>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 3.6 -->
+          <h3 id="s3-6">
+            <span class="sec">3.6.</span>more — 모임·클래스 플랫폼
+          </h3>
+
+          <div class="split">
+            <div class="split-main">
+              <p>
+                사용자가 모임을 열거나 참여하는 서비스입니다. 일일 모임과 정기
+                모임이 있고, 전문가 인증을 받은 사용자는 클래스를 열 수
+                있습니다. 클래스는 호스트가 참여자에게 정보를 제공하는
+                방식이라는 점에서 일반 모임과 다릅니다.
+              </p>
+
+              <h4>서비스의 중추가 채팅에 몰려 있습니다</h4>
+              <p>
+                모임마다 단체 채팅방이 열리고 필요하면 1:1 채팅도 가능합니다.
+                채팅방 안에 위치 공유와 1/N 정산, 일정 변경 투표, 미디어 전송이
+                들어 있어 서비스의 핵심 기능 상당수가 채팅에 모여 있습니다.
+                그래서 특히 신경 써서 작업했습니다.
+              </p>
+              <p>
+                WebSocket과 STOMP로 구현하고 관련 로직을
+                <code>useSocket.ts</code> 커스텀 훅으로 묶어 연결과 연결 상태,
+                해제, 구독, 발행을 반환하는 형태로 정리했습니다. 도배와 외부
+                거래 유도, 개인정보 유출을 막는 정규식 가드도 넣었습니다.
+              </p>
+
+              <h4>모임 등록 때 AI가 성향 질문을 만듭니다</h4>
+              <p>
+                모임을 등록하는 시점에 AI가 모임 소개를 읽고 돈과 시간, 분위기,
+                뒷풀이처럼 분야별 질문을 생성합니다. 호스트는 각 질문에서 자신이
+                선호하는 답을 미리 고릅니다. 나중에 참여자가 같은 질문에 답하면
+                두 답을 비교해 매칭률이 나옵니다. 모임 관리 화면에서는 질문을
+                새로 만들지 않고 호스트가 골라 둔 선호 답만 수정합니다.
+              </p>
+            </div>
+            <div class="split-side">
+              <div class="infobox">
+                <div class="ib-head">more</div>
+                <div class="ib-rows">
+                  <div class="ib-row">
+                    <div class="k">기간</div>
+                    <div class="v">2026.08 ~ 2026.10</div>
+                  </div>
+                  <div class="ib-row">
+                    <div class="k">기여</div>
+                    <div class="v">153 / 267 (57%)</div>
+                  </div>
+                  <div class="ib-row">
+                    <div class="k">규모</div>
+                    <div class="v">TS 272개 · 페이지 43개</div>
+                  </div>
+                  <div class="ib-row">
+                    <div class="k">스택</div>
+                    <div class="v">
+                      Next 16 App Router, React 19, TanStack Query, Jotai, Zod 4
+                    </div>
+                  </div>
+                  <div class="ib-row">
+                    <div class="k">실시간</div>
+                    <div class="v">WebSocket + STOMP, SockJS</div>
+                  </div>
+                  <div class="ib-row">
+                    <div class="k">상태</div>
+                    <div class="v">2026.10.31 마무리 예정</div>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="figph"
+                data-image="08-more"
+                data-alt="more 채팅방 화면"
+              >
+                <span class="label">IMAGE 08</span>
+                <div class="desc">
+                  <b>채팅방 기능 화면</b><br />1/N 정산, 일정 변경 투표, 위치
+                  공유가 보이는 채팅방. 기능이 한 화면에 모여 있다는 점이 핵심.
+                  <b>600×900</b>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 3.7 -->
+          <h3 id="s3-7">
+            <span class="sec">3.7.</span>L.Scan — 제품안전 셀프체크
+          </h3>
+
+          <div class="split">
+            <div class="split-main">
+              <p>
+                롯데중앙연구소 안전센터가 기획하고 자사가 개발한 제품안전
+                셀프체크 앱입니다. 롯데 유통사에서 파는 상품의 라벨을 카메라로
+                찍으면 안전인증 정보와 신고 내용을 확인할 수 있습니다. 스토어에
+                공개하지 않은 사내 업무용 프로그램이며, 웹으로 만들어
+                하이브리드로 패킹해 앱으로 냈습니다.
+              </p>
+              <p>
+                심사에서는 OCR과 정부 OPEN API를 연동해 복잡한 인증번호 확인
+                절차를 줄인 점, 여러 인증번호를 촬영 한 번으로 판정하는 효율성,
+                불필요한 요소를 줄인 직관적인 화면이 평가받았습니다. 사내
+                업무용임에도 기술적 혁신성과 현장 업무 기여도를 인정받은
+                결과입니다. 수상은 서비스 전체에 대한 것이고, 맡은 영역은 아래
+                관리자 페이지와 사용자 화면입니다.
+              </p>
+
+              <h4>관리자 페이지 — 화면과 API를 처음부터 붙였습니다</h4>
+              <p>
+                레이아웃과 메뉴부터 만들었습니다. 사이드 탭과 라우트, 그리고
+                목록과 상세에서 공통으로 쓰는 틀인 테이블과 페이지네이션, 정보
+                카드를 잡았습니다. 관리자 로그인과 로그인 가드를 넣고, 토큰 없이
+                보내야 하는 로그인 요청을 위해 인증을 건너뛰는 처리를 뒀습니다.
+              </p>
+              <p>
+                대시보드는 기간 조회와 품목별 유효·비유효 집계, 추이 차트를
+                API와 연결했습니다. 요청 목록은 목록과 필터, 상세를 연동하고
+                품목과 제품명 컬럼을 더했습니다. 품목 목록은 전기용품과
+                생활용품, 어린이용품, 화학제품, 전파적합성 다섯 가지를 목록과
+                상세로 붙이고 기록 삭제와 외부 인증 검색 링크를 넣었습니다.
+              </p>
+              <p>
+                운영 관리에서는 환경 설정에 담당자와 인증코드, 월별 OCR 한도를
+                두고 공지와 이용가이드의 등록, 수정, 삭제를 연동했습니다. 목록
+                필터 결과를 엑셀로 받는 API도 연결했습니다. 조회 조건은 URL에
+                고정해 새로고침이나 공유에도 유지되게 했고, 시간 표시는 한국
+                시간으로 맞췄습니다.
+              </p>
+
+              <h4>사용자 화면 — 같은 조회 결과를 쓰는 쪽을 다듬었습니다</h4>
+              <p>
+                조회할 파일을 고르는 흐름을 추가하고, 결과 요약의 유효성 판정과
+                상세 화면, 결과 완료 상태를 고쳤습니다. 이력 보기 화면의 로딩과
+                동작을 수정하면서 푸터에 하드코딩된 값을 제거했고, 처리 결과를
+                알리는 토스트를 넣었습니다. 시스템 공지 노출과
+                공지·이용가이드로의 이동도 손봤습니다. 로그인 화면에서는 관리자
+                하드코딩을 빼고 실패 문구를 바꿨으며, 조회 요청에 기기 키를
+                붙였습니다.
+              </p>
+            </div>
+            <div class="split-side">
+              <div class="infobox">
+                <div class="ib-head">L.Scan</div>
+                <div class="ib-rows">
+                  <div class="ib-row">
+                    <div class="k">기간</div>
+                    <div class="v">2024.10 ~ 2025.01</div>
+                  </div>
+                  <div class="ib-row">
+                    <div class="k">기여</div>
+                    <div class="v">81 / 229 (35%) · 관리자 담당</div>
+                  </div>
+                  <div class="ib-row">
+                    <div class="k">규모</div>
+                    <div class="v">TS 136개 · 페이지 13개</div>
+                  </div>
+                  <div class="ib-row">
+                    <div class="k">스택</div>
+                    <div class="v">
+                      Next 14 Pages Router, react-query, Jotai, chart.js
+                    </div>
+                  </div>
+                  <div class="ib-row">
+                    <div class="k">기획</div>
+                    <div class="v">롯데중앙연구소 안전센터</div>
+                  </div>
+                  <div class="ib-row">
+                    <div class="k">수상</div>
+                    <div class="v">
+                      2024 스마트앱어워드<br />생활안전분야 <b>대상</b>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="figph"
+                data-image="09-lscan"
+                data-alt="L.Scan 관리자 대시보드"
+              >
+                <span class="label">IMAGE 09</span>
+                <div class="desc">
+                  <b>관리자 대시보드</b><br />품목별 유효·비유효 집계와 추이
+                  차트가 보이는 화면. 본인 담당 영역이라 이 이미지가 가장 중요.
+                  <b>1200×750</b>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 3.8 -->
+          <h3 id="s3-8">
+            <span class="sec">3.8.</span>썸띵 — B2B 상품 관리 시스템
+          </h3>
+
+          <div class="split">
+            <div class="split-main">
+              <p>
+                2025년 9월부터 11월까지 <strong>두 달 동안 297커밋</strong>을
+                작성했습니다. 전체 644커밋 중 46%입니다. 프로젝트 자체는 3월에
+                시작했지만 본인은 9월에 합류했습니다. TypeScript 파일은
+                195개입니다.
+              </p>
+              <p>
+                직원 25~50명 규모의 썸띵코퍼레이션에서 스프레드시트와
+                파워포인트로 하던 내부 업무를 하나의 시스템으로 묶는
+                프로젝트입니다. 상품과 SKU, 옵션, 공급사 관리에 비교 화면이
+                붙습니다.
+              </p>
+              <p>
+                엑셀로 처리하던 작업과 상품을 업로드해 쓸 수 있게 하는 기능을
+                만들었습니다. 대용량 파싱과 검증이 도는 동안 로딩 상태와 화면
+                표시를 확실히 처리해 이중 클릭 같은 실수를 막았습니다. UX 회의를
+                여러 차례 거쳐, 기존 업무 방식은 유지하면서 필요한 부분만 더하는
+                쪽으로 갔습니다.
+              </p>
+              <p>
+                <a href="#s3-1">eticket</a>에도 비슷한 기능이 있습니다. 템플릿을
+                내려받아 정보를 채워 올리면 해당 고객들에게 초대권 성격의 티켓을
+                대량 발송합니다. 같은 패턴을 다른 도메인에 한 번 더 구현해 본
+                셈입니다.
+              </p>
+            </div>
+            <div class="split-side">
+              <div class="infobox">
+                <div class="ib-head">썸띵</div>
+                <div class="ib-rows">
+                  <div class="ib-row">
+                    <div class="k">기간</div>
+                    <div class="v">2025.09 ~ 2025.11 (합류 후 두 달)</div>
+                  </div>
+                  <div class="ib-row">
+                    <div class="k">기여</div>
+                    <div class="v">297 / 644 (46%)</div>
+                  </div>
+                  <div class="ib-row">
+                    <div class="k">규모</div>
+                    <div class="v">TS 195개</div>
+                  </div>
+                  <div class="ib-row">
+                    <div class="k">성격</div>
+                    <div class="v">B2B 내부 상품 관리</div>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="figph"
+                data-image="11-sumthing"
+                data-alt="썸띵 상품 업로드 화면"
+              >
+                <span class="label">IMAGE 11</span>
+                <div class="desc">
+                  <b>상품 업로드·비교 화면</b><br />엑셀 업로드 중이거나 SKU
+                  비교가 보이는 관리 화면. 내부 도구라 화려한 랜딩보다 이 화면이
+                  맞습니다. <b>1200×750</b>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ========== 4 ========== -->
+          <h2 id="s4"><span class="sec">4.</span>공용 자산</h2>
+
+          <h3>
+            <span class="sec">4.1.</span>@freewier2/things — 사내 공용
+            라이브러리
+          </h3>
+          <p>
+            98커밋 중 51개를 작성했습니다. Vite 라이브러리 빌드에 Storybook과
+            Vitest, husky를 붙였습니다. 필수 유틸을 프로젝트마다 다시 쓰는
+            피로감에서 시작했습니다. 템플릿에 넣는 대신 npm private으로 배포해
+            템플릿을 쓰지 않는 프로젝트에서도 쓸 수 있게 했고, 테스트와 React
+            생태계를 얹어 커스텀 훅도 함께 배포합니다. 코드를 고쳐 GitHub에
+            올리고 태그를 만들어 push하면 GitHub Actions가 배포합니다.
+          </p>
+
+          <h4>하위 호환 사고</h4>
+          <p>
+            <code>useMediaQuery</code>를 만들며 다른 함수를 가져오는 과정에서
+            Cursor가 기존 함수까지 임의로 바꿨고, 그 함수를 쓰던 프로젝트에서
+            타입 에러가 났습니다. 되돌린 뒤
+            <code>breaking-changes.mdc</code> 규칙을 추가했습니다. 라이브러리를
+            배포한다는 것이 무엇을 책임지는 일인지 알게 된 사건입니다.
+          </p>
+
+          <h4>Swagger 코드 생성 커스텀 템플릿</h4>
+          <p>
+            생성된 API 클라이언트에 매번 토큰 재발급 로직을 덧붙이던 작업과,
+            파라미터가 <code>filter</code>로 한 번 감싸지는 사내 GET 규칙에 맞춰
+            필터를 정리하는 작업을 템플릿 자체에 넣었습니다. 위지윅이 필요할
+            때는 주 사용자인 관리자에게 가장 익숙한 네이버 스마트에디터를
+            추천했고, 프로젝트마다 새로 붙이는 반복을 없애려
+            <code>things-smart-editor</code>로 떼어 냈습니다.
+          </p>
+
+          <h3><span class="sec">4.2.</span>React Native 템플릿</h3>
+          <p>
+            15커밋 전부 본인 작업입니다. 웹뷰 설정과 브릿지, 그리고 자주 쓰는
+            소셜 로그인과 딥링크, 위치, FCM을 템플릿으로 묶어 다음 작업의 공수를
+            줄이고 일관된 구조를 주도록 했습니다. 팀 표준으로 두고 피드백을 받아
+            다듬었습니다. 실제 운영 중인 앱은 <a href="#s3-5">쓸모</a>이고,
+            템플릿은 그 설정을 다음 작업에 재사용할 수 있게 정리한 결과입니다.
+          </p>
+
+          <h3><span class="sec">4.3.</span>Next.js 프로젝트 템플릿</h3>
+          <p>
+            설계와 방향은 팀원 전체가 함께 잡았고 포함 범위도 같이 정했습니다.
+            실제 생성과 관리는 동료가 전담했고, 본인은 설계 논의와 사용 피드백
+            쪽으로 참여했습니다. 이 템플릿으로 시작한 프로젝트가
+            <a href="#s3-2">onui</a>, <a href="#s3-6">more</a>, populers 세
+            개이고 셋업 시간이 하루에서 한 시간 안쪽으로 줄었습니다. 템플릿은 팀
+            회의를 거쳐 계속 업데이트되고 있습니다.
+          </p>
+
+          <!-- ========== 5 ========== -->
+          <h2 id="s5"><span class="sec">5.</span>AI를 업무에 적용한 방식</h2>
+
+          <h3><span class="sec">5.1.</span>관리자 페이지 생성 워크플로우</h3>
+          <p>
+            여러 프로젝트를 지나며 관리자 페이지에 겹치는 기능이 많다는 것을
+            알게 됐습니다. 공지사항과 배너, 유저 관리, 관리자 관리처럼 대부분의
+            사이트에 있는 것들이고, 필요한 건 간단한 CRUD 규칙 정도였습니다.
+            어드민 프레임워크라는 것이 존재하는 이유와 같은 맥락입니다.
+          </p>
+          <p>
+            관리자 페이지는 화려한 디자인보다 사용성이 중요하다고 보고 직관적인
+            구조를 먼저 짠 뒤, 그에 맞는 사이드바와 필터, 상세 페이지, 기본
+            레이아웃 규칙을 컴포넌트로 만들어 둡니다. 그다음 각 프로젝트의
+            사용자 화면 목록과 유저 플로우, 기획을 정리한 문서를 AI에 넘기면
+            기본 CRUD 관리자 페이지가 나옵니다.
+          </p>
+
+          <div
+            class="figph"
+            data-image="10-workflow"
+            data-alt="관리자 페이지 생성 워크플로우"
+          >
+            <span class="label">IMAGE 10</span>
+            <div class="desc">
+              <b>워크플로우 다이어그램</b><br />
+              공통 컴포넌트 준비 → 화면 목록·유저 플로우 문서 작성 → AI가 CRUD
+              뼈대 생성 → 프로젝트 고유 기능 추가 → 디테일 보정. 각 단계 아래
+              소요 시간을 적고, 전후 비교(1주~1달 → 2~3일)를 함께 넣으면
+              설득력이 올라갑니다.
+              <b>1400×400</b> 가로형.
+            </div>
+          </div>
+
+          <p>
+            <a href="#s3-2">onui</a>를 예로 들면 상담과 세미나 목록, 공지사항,
+            배너, 유저 관리, 구독과 광고 결제 목록이 만들어집니다. 여기에 상담
+            신청 승낙과 세미나 개최 승낙, 세미나 취소 요청 승낙처럼 그
+            프로젝트에만 있는 기능을 더합니다. 이렇게 뼈대를 잡고 디테일만
+            손보면
+            <strong
+              >2~3일이면 끝납니다. 예전에는 짧아도 일주일, 길면 한 달까지
+              걸렸습니다.</strong
+            >
+          </p>
+
+          <h3>
+            <span class="sec">5.2.</span>디자인과 개발의 순서를 뒤집은 사례
+          </h3>
+          <p>
+            이 방식으로 관리자 페이지를 만들면 클라이언트에게 보여 줄 디자인
+            시안이 없습니다. 원래는 시안을 공유하고 의견을 받아 고친 뒤 개발을
+            시작하는데, 이 흐름을 반대로 돌렸습니다. 프론트엔드에서 MVP를 먼저
+            뽑고 그것을 피그마로 옮겨 주소를 전달합니다.
+          </p>
+          <p>
+            웹사이트를 피그마로 옮기는 데는 동료가 만든 도구를 적용했습니다.
+            Playwright로 PC와 태블릿, 모바일의 전체 페이지와 모달을 캡처해
+            피그마 플러그인으로 올리는 도구이고, 설정 파일만 갈아 끼우면 다른
+            프로젝트에도 쓸 수 있습니다.
+          </p>
+          <p>
+            <a href="#s3-2">onui</a>에서 이 흐름을 끝까지 돌렸습니다.
+            클라이언트가 색상과 특정 컴포넌트의 높이 같은 부분을 지적했고,
+            수정한 뒤 최종 전달까지 마쳤습니다. 도구를 만든 것은 동료이고,
+            본인이 한 일은 그 도구를 자기 프로젝트에 적용해 순서를 뒤집은 흐름을
+            실제로 완주한 것입니다.
+          </p>
+
+          <h3><span class="sec">5.3.</span>팀 규칙</h3>
+          <p>
+            AI 도입으로 개발자 경험과 생산성을 높이자는 회의에서 규칙이
+            나왔습니다. 이후 다른 팀원이 그 내용을 기초로 실무를 진행했고 의견을
+            주고받으며 다듬었습니다.
+            <code>.cursor/rules</code> 일곱 종이 그 결과물입니다.
+          </p>
+          <p>
+            본인이 직접 더한 규칙은 셋입니다. 앞서 적은
+            <code>useApiMutation</code>과 쿼리 키 규약, 요청이 없으면 주석을
+            달지 않는다는 규칙, 그리고 AI가 백엔드에 아직 없는 API까지
+            프론트엔드에서 억지로 필터를 걸어 처리하는 문제를 막는 규칙입니다.
+            마지막 것에는 백엔드에 전달할 필요 작업 내용을 따로 정리하게 만드는
+            절차까지 붙여 팀에 공유했습니다.
+          </p>
+
+          <h3><span class="sec">5.4.</span>AI를 쓰며 지키는 선</h3>
+          <blockquote>
+            <p>
+              AI가 쓴 코드는 무조건 확인합니다. 양이 많으면 요약을 요구합니다.
+              확인하지 않은 코드가 쌓이면 나중에 직접 고쳐야 할 때 이해하고
+              수정하는 데 더 큰 공수가 듭니다. 작은 변경까지 AI에 맡기면
+              그것대로 낭비입니다. AI가 코드를 쓰더라도 개발자가 이해하고 통제할
+              수 있는 범위 안에 있어야 하고, 어디까지나 개발자를 돕는 수단이라
+              주객이 바뀌어선 안 된다고 봅니다.
+            </p>
+          </blockquote>
+
+          <!-- ========== 6 ========== -->
+          <h2 id="s6"><span class="sec">6.</span>기타 프로젝트</h2>
+          <table class="data wide">
+            <tr>
+              <th>프로젝트</th>
+              <th>기간</th>
+              <th>커밋</th>
+              <th>내용</th>
+            </tr>
+            <tr>
+              <td data-label="프로젝트">populers</td>
+              <td data-label="기간">2026.04 ~ 2026.05</td>
+              <td class="num" data-label="커밋">74 / 144</td>
+              <td data-label="내용">
+                인플루언서와 광고주를 매칭해 SNS 광고를 집행하고 AI 평가 후 추가
+                요청과 정산까지. WebSocket + STOMP 채팅이 주요 기능
+              </td>
+            </tr>
+            <tr>
+              <td data-label="프로젝트">wier</td>
+              <td data-label="기간">2025.02 ~ 2026.02</td>
+              <td class="num" data-label="커밋">130 / 513</td>
+              <td data-label="내용">
+                자사 서비스이자 홈페이지. 랜딩 애니메이션 담당 — 드래그에 따른
+                글자 색 변화, 점등 효과, 마우스 주변 조명
+              </td>
+            </tr>
+            <tr>
+              <td data-label="프로젝트">한국 중장년 협회</td>
+              <td data-label="기간">2025.07 (2주)</td>
+              <td class="num" data-label="커밋">31 / 31</td>
+              <td data-label="내용">
+                <span
+                  ><a href="#s3-3">커넥티드456</a>의 자매 서비스. 단독
+                  작업</span
+                >
+              </td>
+            </tr>
+          </table>
+
+          <div class="doc-foot">
+            이 문서의 모든 커밋 수와 파일 수, 기간은 각 저장소의 git 기록과
+            <code>package.json</code>에서 직접 확인한 값입니다. 기간은 프로젝트
+            전체 기간이 아니라 본인이 실제로 커밋한 구간이며, 팀과 함께한 작업은
+            전체 커밋 중 본인 몫을 함께 적었습니다.
+          </div>
         </div>
       </div>
     </div>

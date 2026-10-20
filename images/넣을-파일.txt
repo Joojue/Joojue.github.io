@@ -1,10 +1,15 @@
 이 폴더에 아래 이름으로 넣으면 위키에 자동으로 붙습니다.
 확장자는 png, jpg, jpeg, webp, gif 중 아무거나면 됩니다.
 
-01-cover.png       표지 콜라주
 02-profile.png     프로필 사진
 03-eticket.png     eticket 메인
-04-onui.png        onui 화상 상담
+04-onui.png        onui 메인
+04-onui-1.png      onui 화상 상담 1
+04-onui-2.png      onui 화상 상담 2
+04-onui-3.png      onui 화상 상담 3
+04-onui-4.png      onui 화상 상담 4
+04-onui-5.png      onui 화상 상담 5
+04-onui-6.png      onui 화상 상담 6
 05-connected.png   커넥티드456 PC·모바일
 06-pubg.png        PUBG 메인·통계
 07-sseulmo.png     쓸모 앱 스크린샷
