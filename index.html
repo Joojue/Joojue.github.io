@@ -432,6 +432,10 @@
       .figph.has-img .desc {
         display: none;
       }
+      .figph.has-img a {
+        display: block;
+        cursor: zoom-in;
+      }
       .figph.has-img img {
         display: block;
         width: 100%;
@@ -441,6 +445,9 @@
       .profile .figph.has-img {
         padding: 0;
         background: #f3f4f5;
+      }
+      .profile .figph.has-img a {
+        height: 100%;
       }
       .profile .figph.has-img img {
         height: 100%;
@@ -1981,7 +1988,12 @@
               var img = document.createElement("img");
               img.src = src;
               img.alt = box.getAttribute("data-alt") || "";
-              box.insertBefore(img, box.firstChild);
+              var link = document.createElement("a");
+              link.href = src;
+              link.target = "_blank";
+              link.rel = "noopener noreferrer";
+              link.appendChild(img);
+              box.insertBefore(link, box.firstChild);
               box.classList.add("has-img");
             };
             probe.onerror = function () {
