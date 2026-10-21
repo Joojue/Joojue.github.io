@@ -118,7 +118,7 @@
       .mast-overview .lead {
         margin: 0 0 14px;
       }
-      @media (max-width: 980px) {
+      @media screen and (max-width: 980px) {
         .profile {
           grid-template-columns: 1fr;
         }
@@ -306,7 +306,7 @@
         overflow-wrap: anywhere;
         word-break: break-word;
       }
-      @media (max-width: 1600px) {
+      @media screen and (max-width: 1600px) {
         :root {
           --wrap: 920px;
         }
@@ -314,7 +314,7 @@
           margin: 0 48px;
         }
       }
-      @media (max-width: 980px) {
+      @media screen and (max-width: 980px) {
         .page {
           margin: 0;
         }
@@ -347,7 +347,7 @@
           order: -1;
         }
       }
-      @media (max-width: 640px) {
+      @media screen and (max-width: 640px) {
         .inner {
           padding: 24px 12px 52px;
         }
@@ -383,7 +383,7 @@
       .card p:last-child {
         margin-bottom: 14px;
       }
-      @media (max-width: 900px) {
+      @media screen and (max-width: 900px) {
         .grid2 {
           grid-template-columns: 1fr;
         }
@@ -445,15 +445,20 @@
         height: auto;
       }
       .profile .figph.has-img {
-        padding: 0;
+        padding: 28px 24px;
         background: #f3f4f5;
       }
       .profile .figph.has-img a {
-        height: 100%;
+        height: auto;
+        width: 100%;
+        max-width: 168px;
+        margin: 0 auto;
       }
       .profile .figph.has-img img {
-        height: 100%;
-        object-fit: cover;
+        width: 100%;
+        height: auto;
+        object-fit: contain;
+        object-position: center;
       }
       .split-side > .figph.has-img {
         background: #fff;
@@ -469,7 +474,7 @@
         margin: 0;
         min-height: 140px;
       }
-      @media (max-width: 980px) {
+      @media screen and (max-width: 980px) {
         .shot-grid {
           grid-template-columns: 1fr;
         }
@@ -514,7 +519,7 @@
       table.data td.num {
         font-variant-numeric: tabular-nums;
       }
-      @media (max-width: 640px) {
+      @media screen and (max-width: 640px) {
         table.data.wide,
         table.data.wide tbody {
           display: block;
@@ -579,6 +584,126 @@
         font-size: 12.3px;
         color: var(--text-sub);
       }
+
+      @page {
+        size: A4;
+        margin: 16mm 14mm 18mm;
+      }
+      @media print {
+        html,
+        body {
+          background: #fff;
+          font-size: 10.5pt;
+          line-height: 1.65;
+          -webkit-print-color-adjust: exact;
+          print-color-adjust: exact;
+        }
+        .page {
+          margin: 0;
+        }
+        .wrap {
+          width: auto;
+          max-width: none;
+          min-height: 0;
+          border: none;
+          padding: 0;
+        }
+        .inner {
+          margin: 0;
+          padding: 0;
+        }
+        .toc {
+          position: static;
+          left: auto;
+          top: auto;
+          width: auto;
+          max-width: none;
+          margin: 0 0 22px;
+          break-inside: avoid;
+          page-break-inside: avoid;
+        }
+        .toc ol {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          column-gap: 24px;
+          white-space: normal;
+        }
+        .profile {
+          grid-template-columns: 148px minmax(0, 1fr);
+          break-inside: avoid;
+          page-break-inside: avoid;
+        }
+        .profile .figph.has-img {
+          padding: 16px 12px;
+        }
+        .profile .figph.has-img a {
+          max-width: 112px;
+        }
+        .profile .figph.has-img img {
+          height: auto;
+          max-height: 140px;
+          object-fit: contain;
+        }
+        .split {
+          grid-template-columns: minmax(0, 1fr) 220px;
+          gap: 8px 22px;
+          margin-bottom: 28px;
+        }
+        .split-side {
+          break-inside: avoid;
+          page-break-inside: avoid;
+        }
+        .infobox,
+        .card,
+        blockquote,
+        table.data,
+        .figph {
+          break-inside: avoid;
+          page-break-inside: avoid;
+        }
+        h2,
+        h3,
+        h4 {
+          break-after: avoid;
+          page-break-after: avoid;
+        }
+        h2 {
+          margin-top: 28px;
+        }
+        .grid2 {
+          grid-template-columns: 1fr 1fr;
+          background: transparent;
+          gap: 12px;
+          border: none;
+        }
+        .card {
+          border: 1px solid var(--line-strong);
+          padding: 16px 18px 6px;
+        }
+        .shot-grid {
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+        .figph.has-img img {
+          max-height: 280px;
+          width: 100%;
+          object-fit: contain;
+          object-position: top;
+        }
+        .split-side > .figph.has-img img,
+        .shot-grid .figph.has-img img {
+          max-height: 220px;
+        }
+        .profile .figph.has-img img {
+          max-height: 140px;
+        }
+        a {
+          text-decoration: none;
+        }
+        a[href^="http"]::after,
+        a[href^="mailto"]::after {
+          content: none;
+        }
+      }
     </style>
   </head>
   <body>
@@ -605,7 +730,7 @@
               </tr>
               <tr>
                 <th>직군</th>
-                <td>웹 프론트엔드 / React Native</td>
+                <td>웹 프론트엔드 / React Native 개발자</td>
               </tr>
               <tr>
                 <th>경력</th>
@@ -613,11 +738,14 @@
               </tr>
               <tr>
                 <th>프로젝트</th>
-                <td>전부 외주 · 14개 · 단독 4개</td>
+                <td>총 14개 프로젝트 참여 (단독 개발 4개)</td>
               </tr>
               <tr>
-                <th>주력</th>
-                <td>Next.js, React, TypeScript · Jotai, TanStack Query</td>
+                <th>주력 스택</th>
+                <td>
+                  Next.js, React, TypeScript, React Native · Jotai, TanStack
+                  Query
+                </td>
               </tr>
               <tr>
                 <th>연락처</th>
@@ -636,25 +764,26 @@
                 <th>학력</th>
                 <td>
                   <span class="stack">
-                    <span>한국외국어대학교 세르비아크로아티아어과 졸업</span>
-                    <span>2017.03 ~ 2023.08</span>
-                    <span>학과 및 단과대학 학생회장</span>
-                    <span>컴퓨터공학과 자율선택 29학점</span>
                     <span
-                      >자료구조, 알고리즘, 정보보안, 웹 프로그래밍, 운영체제,
-                      데이터베이스</span
+                      >한국외국어대학교 세르비아크로아티아어과 졸업 (2017.03 ~
+                      2023.08)</span
+                    >
+                    <span>학과 및 단과대학 학생회장</span>
+                    <span
+                      >컴퓨터공학과 자율선택 29학점 이수 (자료구조, 알고리즘,
+                      정보보안, 웹 프로그래밍, 운영체제, 데이터베이스)</span
                     >
                   </span>
                 </td>
               </tr>
               <tr>
                 <th>교육</th>
-                <td>슈퍼코딩 웹 프론트엔드 부트캠프 · 2023.04 ~ 2023.11</td>
+                <td>슈퍼코딩 웹 프론트엔드 부트캠프 (2023.04 ~ 2023.11)</td>
               </tr>
               <tr>
                 <th>수상</th>
                 <td>
-                  2024 스마트앱어워드 생활안전분야 대상 · 2024.12.18 —
+                  2024 스마트앱어워드 생활안전분야 대상 (2024.12.18) —
                   <a href="#s3-7">L.Scan</a>
                 </td>
               </tr>
